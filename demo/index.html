@@ -23,12 +23,18 @@
     border:2px solid #ffffff55;transition:transform .12s;}
   .card .dot:hover{transform:scale(1.18);}
   .card .dot.active{border-color:#fff;transform:scale(1.18);}
+  .bgbar{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:14px;flex-wrap:wrap;}
+  .bgbar .blabel{font-size:11px;opacity:.5;text-transform:uppercase;letter-spacing:.08em;margin-right:4px;}
+  .bgbar .bgdot{width:26px;height:26px;border-radius:8px;cursor:pointer;border:2px solid #ffffff40;transition:transform .12s;}
+  .bgbar .bgdot:hover{transform:scale(1.12);}
+  .bgbar .bgdot.active{border-color:#fff;transform:scale(1.12);}
   @media (max-width:900px){ #grid{grid-template-columns:1fr;} .card{aspect-ratio:16/9;} }
 </style></head>
 <body>
   <header>
     <h1>xebia-animation-line</h1>
-    <div class="sub">todas las animaciones · cambia el color de cada una con los círculos</div>
+    <div class="sub">todas las animaciones · color por card con los círculos · fondo global abajo</div>
+    <div class="bgbar" id="backgrounds"></div>
   </header>
   <div id="grid"></div>
   <script type="module" src="./grid.ts"></script>
