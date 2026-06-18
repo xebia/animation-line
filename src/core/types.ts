@@ -1,6 +1,6 @@
 export const VARIANT_NAMES = [
   'oscilacion', 'onda', 'interferencia', 'malla', 'rejilla',
-  'pliegues', 'cubo',
+  'pliegues', 'cubo', 'flujo', 'entrelazado', 'espiral',
 ] as const;
 
 export type VariantName = (typeof VARIANT_NAMES)[number];

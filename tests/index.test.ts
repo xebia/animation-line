@@ -4,7 +4,7 @@ import { LineField, VARIANTS, VARIANT_NAMES } from '../src/index';
 describe('public API', () => {
   it('exports LineField, VARIANTS, VARIANT_NAMES', () => {
     expect(typeof LineField).toBe('function');
-    expect(Object.keys(VARIANTS).length).toBe(7);
-    expect(VARIANT_NAMES.length).toBe(7);
+    expect(Object.keys(VARIANTS).length).toBe(10);
+    expect(VARIANT_NAMES.length).toBe(10);
   });
 });
