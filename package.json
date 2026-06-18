@@ -10,7 +10,8 @@
     "dev": "vite",
     "build": "vite build && tsc --emitDeclarationOnly",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:demo": "vite build --config vite.demo.config.ts"
   },
   "keywords": [],
   "author": "",
