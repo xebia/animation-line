@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xebia · cards con animación</title>
+<style>
+  *{box-sizing:border-box;margin:0;}
+  :root{ --ink:#0b0b0d; --muted:#6b6b73; --line:#e7e7ec; }
+  body{background:#0d0d10;font-family:"Helvetica Neue",Arial,sans-serif;color:var(--ink);padding:0 0 40px;}
+  header{max-width:1200px;margin:0 auto;padding:26px 24px 8px;display:flex;justify-content:space-between;align-items:center;color:#e8e8ee;}
+  header h1{font-size:16px;font-weight:700;letter-spacing:-.01em;}
+  header a{color:#cfd6e6;text-decoration:none;font-size:13px;border:1px solid #ffffff33;padding:7px 12px;border-radius:99px;}
+  #cards{max-width:1200px;margin:0 auto;padding:16px 24px;display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+
+  .xcard{background:#fff;border-radius:20px;overflow:hidden;position:relative;height:520px;display:flex;box-shadow:0 18px 50px #0007;}
+  .xcard h2{font-weight:700;letter-spacing:-.025em;line-height:1.04;}
+  .kicker{font-size:13px;color:var(--muted);font-weight:500;}
+  .brand{font-weight:800;letter-spacing:-.02em;font-size:15px;}
+  .brand b{font-size:17px;}
+  .desc{font-size:14px;color:#3a3a42;line-height:1.4;}
+  .pill{align-self:flex-start;border:1px solid #cfcfd6;background:#fff;color:#0b0b0d;
+    padding:10px 18px;border-radius:99px;font-size:13px;cursor:pointer;font-family:inherit;}
+  .accent{width:4px;flex:0 0 4px;background:linear-gradient(180deg,#ff7eb3,#8a5cff,#3fd6a0);}
+  .viz{position:relative;background:#06101a;}
+  .viz canvas{position:absolute;inset:0;}
+
+  /* split: texto + animación lateral */
+  .xcard.split .text{flex:1;padding:30px 28px;display:flex;flex-direction:column;}
+  .xcard.split .text .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:auto;}
+  .xcard.split h2{font-size:30px;margin:26px 0;}
+  .xcard.split .bottom{display:flex;flex-direction:column;gap:16px;}
+  .xcard.split .viz{flex:0 0 40%;}
+
+  /* stacked: texto arriba, animación abajo */
+  .xcard.stacked{flex-direction:column;}
+  .xcard.stacked .text{padding:30px 28px 18px;}
+  .xcard.stacked .text .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+  .xcard.stacked h2{font-size:28px;}
+  .xcard.stacked .desc{margin-top:14px;}
+  .xcard.stacked .viz{flex:1;border-top:4px solid transparent;
+    border-image:linear-gradient(90deg,#ff7eb3,#8a5cff,#3fd6a0) 1;}
+  .xcard.stacked .pill.float{position:absolute;right:22px;bottom:22px;z-index:3;
+    background:#ffffffcc;backdrop-filter:blur(6px);}
+
+  /* quote: testimonio */
+  .xcard.quote .text{flex:1;padding:30px 28px;display:flex;flex-direction:column;}
+  .xcard.quote .text .top{margin-bottom:24px;}
+  .xcard.quote h2{font-size:27px;font-weight:600;margin-bottom:auto;}
+  .xcard.quote .author{font-size:13px;color:var(--muted);line-height:1.4;}
+  .xcard.quote .viz{flex:0 0 42%;}
+
+  /* stats: título arriba + tiles sobre animación */
+  .xcard.statscard{flex-direction:column;}
+  .xcard.statscard .text{padding:28px 28px 14px;}
+  .xcard.statscard .text .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+  .xcard.statscard h2{font-size:30px;}
+  .xcard.statscard .sub{font-size:13px;color:var(--muted);margin-top:10px;}
+  .xcard.statscard .viz{flex:1;}
+  .statsviz .tiles{position:absolute;inset:auto 22px 22px 22px;z-index:3;display:flex;gap:12px;}
+  .statsviz .tile{flex:1;background:#ffffff1a;border:1px solid #ffffff2e;border-radius:14px;
+    padding:16px 14px;backdrop-filter:blur(6px);color:#eef;}
+  .statsviz .tile .n{font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1;}
+  .statsviz .tile .l{font-size:11px;color:#cdd3e6;margin-top:14px;line-height:1.3;}
+
+  @media (max-width:880px){ #cards{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Xebia · cards con animación</h1>
+    <a href="./">← ver grid</a>
+  </header>
+  <div id="cards"></div>
+  <script type="module" src="./cards.ts"></script>
+</body>
+</html>
