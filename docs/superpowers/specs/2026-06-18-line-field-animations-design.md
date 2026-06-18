@@ -19,9 +19,9 @@ Crear una librería de **animaciones de campos de líneas** reutilizables y fram
 ### Dentro
 
 - Motor de render WebGL común (OGL).
-- Set inicial de variantes: **Oscilación lineal, Onda/Flow, Rejilla 3D, Radial, Geométrica, Tech/Red**.
-- API pública `LineField` con opciones `variant`, `palette`, `background`, `mode`.
-- Modo `auto` (bucle) y modo `scroll` (progreso dirigido por scroll, sin ratón).
+- Set de variantes (10): **oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo, flujo, entrelazado, espiral**.
+- API pública `LineField` con opciones `variant`, `palette`, `background`, `speed`.
+- Animación **autónoma** (bucle por tiempo). Sin ratón y **sin scroll**.
 - Wrapper opcional para React.
 - Galería demo (Vite) con selector de variante, paleta y fondo.
 
@@ -47,24 +47,24 @@ import { LineField } from 'xebia-animation-line';
 
 const anim = new LineField(container: HTMLElement, options: LineFieldOptions);
 anim.destroy();          // limpia canvas, listeners y contexto GL
-anim.setOptions(partial) // actualiza variante/paleta/fondo/modo en caliente
+anim.setOptions(partial) // actualiza variante/paleta/fondo en caliente
 ```
 
 ```ts
 interface LineFieldOptions {
-  variant: 'oscilacion' | 'onda' | 'rejilla3d' | 'radial' | 'geometrica' | 'tech';
+  variant: 'oscilacion' | 'onda' | 'interferencia' | 'malla' | 'rejilla'
+         | 'pliegues' | 'cubo' | 'flujo' | 'entrelazado' | 'espiral';
   palette: string[];                  // 2+ colores hex → degradado
   background:
     | { type: 'solid'; color: string }
     | { type: 'gradient'; from: string; to: string; angle?: number }
     | { type: 'transparent' };
-  mode?: 'auto' | 'scroll';           // por defecto 'auto'
-  speed?: number;                     // multiplicador de velocidad (auto)
+  speed?: number;                     // multiplicador de velocidad (por defecto 0.6, modo suave)
   lineCount?: number;                 // densidad
 }
 ```
 
-- En `mode: 'scroll'`, el progreso `t` de la animación se mapea al avance de scroll del contenedor en viewport (IntersectionObserver + rAF). Sin listeners de puntero.
+- Animación **autónoma**: bucle por tiempo, sin ratón ni scroll.
 - `prefers-reduced-motion: reduce` → renderiza un fotograma estático representativo en lugar de animar.
 
 ## 5. Arquitectura
@@ -73,10 +73,9 @@ interface LineFieldOptions {
 src/
   core/
     Renderer.ts      // setup OGL: canvas, programa, resize (DPR), loop rAF, destroy
-    LineField.ts     // clase pública: orquesta variante + tema + modo
+    LineField.ts     // clase pública: orquesta variante + tema (bucle autónomo)
     palette.ts       // construye el degradado a partir de string[]
     background.ts    // pinta/configura el fondo (solid|gradient|transparent)
-    scroll.ts        // mapea avance de scroll → t (IntersectionObserver + rAF)
     reducedMotion.ts // detecta prefers-reduced-motion
     types.ts         // LineFieldOptions y tipos compartidos
   variants/          // cada variante: misma interfaz Variant
