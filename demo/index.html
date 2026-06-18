@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="es">
-<head><meta charset="utf-8"><title>xebia-animation-line · galería</title>
+<head><meta charset="utf-8"><title>xebia-animation-line · grid</title>
 <style>
-  *{box-sizing:border-box;margin:0;} html,body{height:100%;font-family:sans-serif;}
-  #stage{position:fixed;inset:0;} #stage canvas{width:100%;height:100%;}
-  .ui{position:fixed;z-index:10;display:flex;gap:6px;flex-wrap:wrap;}
-  .variants{bottom:16px;left:50%;transform:translateX(-50%);max-width:94vw;justify-content:center;}
-  .palettes{top:16px;right:16px;} .backgrounds{top:54px;right:16px;}
-  button,.dot{cursor:pointer;}
-  .ui button{border:1px solid #8888;background:#7f7f7f22;color:#cde;padding:7px 12px;border-radius:99px;font-size:12px;}
-  .ui button.active{background:#fff;color:#0a1a24;font-weight:600;}
-  .dot{width:20px;height:20px;border-radius:50%;border:2px solid #8888;}
+  *{box-sizing:border-box;margin:0;}
+  body{background:#05080f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#cde;}
+  header{padding:18px 16px 6px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  header h1{font-size:16px;font-weight:600;letter-spacing:.02em;}
+  header .sub{font-size:12px;opacity:.55;}
+  #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;padding:12px 16px 24px;}
+  .cell{position:relative;height:230px;border-radius:12px;overflow:hidden;background:#06101a;border:1px solid #ffffff14;}
+  .cell .stage{position:absolute;inset:0;}
+  .cell .label{position:absolute;left:12px;bottom:10px;z-index:2;font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.85;text-shadow:0 1px 6px #000a;}
 </style></head>
 <body>
-  <div id="stage"></div>
-  <div class="ui palettes" id="palettes"></div>
-  <div class="ui backgrounds" id="backgrounds"></div>
-  <div class="ui variants" id="variants"></div>
-  <script type="module" src="./main.ts"></script>
+  <header>
+    <h1>xebia-animation-line</h1>
+    <span class="sub">todas las animaciones · clic en una para verla a pantalla completa</span>
+  </header>
+  <div id="grid"></div>
+  <script type="module" src="./grid.ts"></script>
 </body></html>

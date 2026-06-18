@@ -14,8 +14,12 @@ const BACKGROUNDS: Background[] = [
   { type: 'solid', color: '#eef2f7' },
 ];
 
+const hash = location.hash.slice(1);
+const initial = (VARIANT_NAMES as readonly string[]).includes(hash)
+  ? (hash as LineFieldOptions['variant'])
+  : 'oscilacion';
 const opts: LineFieldOptions = {
-  variant: 'oscilacion', palette: PALETTES[0], background: BACKGROUNDS[0],
+  variant: initial, palette: PALETTES[0], background: BACKGROUNDS[0],
 };
 const stage = document.getElementById('stage')!;
 let field = new LineField(stage, opts);
