@@ -67,6 +67,14 @@
   .bgbar .bgdot{width:24px;height:24px;border-radius:7px;cursor:pointer;border:2px solid #ffffff40;transition:transform .12s;}
   .bgbar .bgdot:hover{transform:scale(1.12);}
   .bgbar .bgdot.active{border-color:#fff;transform:scale(1.12);}
+  /* control de zoom por card */
+  .zoomctl{position:absolute;top:10px;right:10px;z-index:6;display:flex;align-items:center;gap:6px;
+    background:#0009;border:1px solid #ffffff33;border-radius:99px;padding:4px 8px;backdrop-filter:blur(6px);}
+  .zoomctl button{width:22px;height:22px;border-radius:50%;border:1px solid #ffffff55;background:#ffffff14;
+    color:#fff;cursor:pointer;font-size:15px;line-height:1;padding:0;font-family:inherit;}
+  .zoomctl button:hover{background:#ffffff2e;}
+  .zoomctl span{color:#fff;font-size:11px;min-width:34px;text-align:center;}
+
   /* cover: animación a sangre completa, texto encima */
   .xcard.cover .viz{position:absolute;inset:0;}
   .xcard.cover .overlay{position:absolute;inset:0;z-index:2;padding:30px 28px;display:flex;flex-direction:column;color:#fff;

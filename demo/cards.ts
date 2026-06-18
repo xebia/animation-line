@@ -153,16 +153,36 @@ function render(card: Card): HTMLElement {
   return el.firstElementChild as HTMLElement;
 }
 
+function addZoomControl(node: HTMLElement, field: LineField, z0: number): void {
+  let z = z0;
+  const ctl = document.createElement('div');
+  ctl.className = 'zoomctl';
+  const minus = document.createElement('button');
+  minus.textContent = '−';
+  const val = document.createElement('span');
+  const plus = document.createElement('button');
+  plus.textContent = '+';
+  const fmt = () => { val.textContent = `${z.toFixed(1)}×`; };
+  const apply = () => { field.setOptions({ zoom: z }); fmt(); };
+  minus.onclick = () => { z = Math.max(1, Math.round((z - 0.2) * 10) / 10); apply(); };
+  plus.onclick = () => { z = Math.min(4, Math.round((z + 0.2) * 10) / 10); apply(); };
+  fmt();
+  ctl.append(minus, val, plus);
+  node.appendChild(ctl);
+}
+
 for (const card of CARDS) {
   const node = render(card);
   root.appendChild(node);
   const viz = node.querySelector<HTMLElement>('.viz')!;
-  fields.push(new LineField(viz, {
+  const field = new LineField(viz, {
     variant: card.viz.variant,
     palette: card.viz.palette,
     background: card.viz.background,
     zoom: card.viz.zoom,
-  }));
+  });
+  fields.push(field);
+  addZoomControl(node, field, card.viz.zoom);
 }
 
 // Hero al final (animación close-up en la zona de imagen).
