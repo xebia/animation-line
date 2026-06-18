@@ -6,6 +6,7 @@
     "strict": true,
     "declaration": true,
     "outDir": "dist",
+    "rootDir": "src",
     "lib": ["ES2020", "DOM"],
     "jsx": "react-jsx",
     "skipLibCheck": true
