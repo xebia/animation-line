@@ -170,14 +170,9 @@ function render(card: Card): HTMLElement {
   return el.firstElementChild as HTMLElement;
 }
 
-const PAN_PRESETS = [
-  { x: 0, y: 0 }, { x: 0, y: 0.45 }, { x: 0, y: -0.45 }, { x: 0.45, y: 0 }, { x: -0.45, y: 0 },
-];
-
-// Control en vivo: zoom (− / +) y "región" (recorre la zona visible de la animación).
+// Control en vivo de zoom (− / +).
 function addVizControl(node: HTMLElement, field: LineField, z0: number): void {
   let z = z0;
-  let pi = 0;
   const ctl = document.createElement('div');
   ctl.className = 'zoomctl';
   const minus = document.createElement('button');
@@ -185,16 +180,11 @@ function addVizControl(node: HTMLElement, field: LineField, z0: number): void {
   const val = document.createElement('span');
   const plus = document.createElement('button');
   plus.textContent = '+';
-  const region = document.createElement('button');
-  region.textContent = '◳';
-  region.title = 'Cambiar zona';
-  region.style.marginLeft = '4px';
   const fmt = () => { val.textContent = `${z.toFixed(1)}×`; };
   minus.onclick = () => { z = Math.max(1, Math.round((z - 0.2) * 10) / 10); field.setOptions({ zoom: z }); fmt(); };
   plus.onclick = () => { z = Math.min(4, Math.round((z + 0.2) * 10) / 10); field.setOptions({ zoom: z }); fmt(); };
-  region.onclick = () => { pi = (pi + 1) % PAN_PRESETS.length; field.setOptions({ pan: PAN_PRESETS[pi] }); };
   fmt();
-  ctl.append(minus, val, plus, region);
+  ctl.append(minus, val, plus);
   node.appendChild(ctl);
 }
 
