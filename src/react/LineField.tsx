@@ -10,6 +10,6 @@ export function LineFieldReact(props: LineFieldOptions & { className?: string; s
     const field = new LineField(ref.current, opts);
     return () => field.destroy();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [opts.variant, opts.mode]);
+  }, [opts.variant]);
   return <div ref={ref} className={className} style={style} />;
 }

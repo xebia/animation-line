@@ -15,7 +15,7 @@ const BACKGROUNDS: Background[] = [
 ];
 
 const opts: LineFieldOptions = {
-  variant: 'oscilacion', palette: PALETTES[0], background: BACKGROUNDS[0], mode: 'auto',
+  variant: 'oscilacion', palette: PALETTES[0], background: BACKGROUNDS[0],
 };
 const stage = document.getElementById('stage')!;
 let field = new LineField(stage, opts);

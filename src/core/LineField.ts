@@ -3,7 +3,6 @@ import { VARIANTS } from '../variants';
 import { resolveBackground } from './background';
 import { prefersReducedMotion } from './reducedMotion';
 import { Renderer } from './Renderer';
-import { ScrollProgress } from './scroll';
 
 interface Internals {
   renderer?: Pick<Renderer, 'setPalette' | 'setBackground' | 'resize' | 'size' | 'draw' | 'destroy'>;
@@ -16,8 +15,6 @@ export class LineField {
   private raf = 0;
   private running = false;
   private reduced: boolean;
-  private scroll?: ScrollProgress;
-  private scrollT = 0;
 
   constructor(private el: HTMLElement, private opts: LineFieldOptions, internals: Internals = {}) {
     const canvas = document.createElement('canvas');
@@ -40,11 +37,11 @@ export class LineField {
     this.applyOptions();
   }
 
-  /** Render one frame at time t (ms). */
+  /** Render one frame at time t (ms). Autonomous loop only — no pointer, no scroll. */
   tick(t: number): void {
     const variant = VARIANTS[this.opts.variant];
     const { W, H } = this.renderer!.size;
-    const time = this.opts.mode === 'scroll' ? this.scrollT * 10000 : t * (this.opts.speed ?? 0.6); // 0.6 = modo suave por defecto
+    const time = t * (this.opts.speed ?? 0.6); // 0.6 = modo suave por defecto
     this.renderer!.draw(variant.generate({ t: time, W, H, lineCount: this.opts.lineCount }));
   }
 
@@ -52,11 +49,6 @@ export class LineField {
     if (this.running) return;
     this.running = true;
     if (this.reduced) { this.tick(0); this.running = false; return; }
-    if (this.opts.mode === 'scroll') {
-      this.scroll = new ScrollProgress(this.el, (t) => { this.scrollT = t; this.tick(0); });
-      this.scroll.start();
-      return;
-    }
     const loop = (t: number) => { if (!this.running) return; this.tick(t); this.raf = requestAnimationFrame(loop); };
     this.raf = requestAnimationFrame(loop);
   }
@@ -64,7 +56,6 @@ export class LineField {
   stop(): void {
     this.running = false;
     cancelAnimationFrame(this.raf);
-    this.scroll?.stop();
   }
 
   destroy(): void {
