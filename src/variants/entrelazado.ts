@@ -7,6 +7,8 @@ export const entrelazado: Variant = {
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const N = lineCount ?? 80, samples = 120;
     const midY = H * 0.5, amp1 = H * 0.22, amp2 = H * 0.12;
+    // onda triangular (zigzag) en lugar de senoidal → trenzado angular/geométrico
+    const tri = (p: number): number => { const x = p / 6.283; const f = x - Math.floor(x); return 4 * Math.abs(f - 0.5) - 1; };
     const out: Polyline[] = [];
     for (let l = 0; l < N; l++) {
       const s = l / (N - 1);
@@ -14,8 +16,8 @@ export const entrelazado: Variant = {
       for (let i = 0; i <= samples; i++) {
         const u = i / samples, x = lerp(W * 0.04, W * 0.96, u);
         const y = midY +
-          Math.sin(u * 6.283 * 1.5 + t * 0.0009 + s * 6.283) * amp1 +
-          Math.sin(u * 6.283 * 2.7 - t * 0.0006 + s * 9.0) * amp2;
+          tri(u * 6.283 * 1.5 + t * 0.0009 + s * 6.283) * amp1 +
+          tri(u * 6.283 * 2.7 - t * 0.0006 + s * 9.0) * amp2;
         pts.push(x, y);
       }
       out.push({ pts, s });
