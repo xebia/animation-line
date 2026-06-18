@@ -31,6 +31,9 @@ export class Renderer {
   private mesh: Mesh;
   private geometry: Geometry;
   private bg: ResolvedBackground = { clear: [0, 0, 0, 1], blend: 'add' };
+  private ro?: ResizeObserver;
+  private W = 1;
+  private H = 1;
 
   constructor(private canvas: HTMLCanvasElement) {
     this.renderer = new OGLRenderer({ canvas, alpha: true, antialias: true, dpr: Math.min(devicePixelRatio || 1, 2) });
@@ -45,6 +48,13 @@ export class Renderer {
       s: { size: 1, data: new Float32Array() },
     });
     this.mesh = new Mesh(this.gl, { geometry: this.geometry, program: this.program, mode: this.gl.LINES });
+
+    this.canvas.style.display = 'block';
+    this.resize();
+    if (typeof ResizeObserver !== 'undefined') {
+      this.ro = new ResizeObserver(() => this.resize());
+      this.ro.observe(this.canvas.parentElement ?? this.canvas);
+    }
   }
 
   setPalette(palette: string[]): void {
@@ -58,11 +68,20 @@ export class Renderer {
   }
 
   resize(): void {
-    this.renderer.setSize(this.canvas.clientWidth, this.canvas.clientHeight);
+    // Measure the container, not the canvas: OGL writes explicit px into the
+    // canvas inline style, which would otherwise defeat the 100% fill.
+    const target = this.canvas.parentElement ?? this.canvas;
+    const rect = target.getBoundingClientRect();
+    this.W = Math.max(1, Math.round(rect.width));
+    this.H = Math.max(1, Math.round(rect.height));
+    this.renderer.setSize(this.W, this.H);
+    // Re-assert fill so the canvas tracks its container instead of OGL's px.
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
   }
 
   get size(): { W: number; H: number } {
-    return { W: this.canvas.clientWidth, H: this.canvas.clientHeight };
+    return { W: this.W, H: this.H };
   }
 
   draw(polylines: Polyline[]): void {
@@ -85,6 +104,7 @@ export class Renderer {
   }
 
   destroy(): void {
+    this.ro?.disconnect();
     const ext = this.gl.getExtension('WEBGL_lose_context');
     ext?.loseContext();
   }
