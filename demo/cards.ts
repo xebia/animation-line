@@ -72,13 +72,13 @@ const CARDS: Card[] = [
     type: 'cover', label: 'Report',
     title: 'The State of Platform Engineering',
     cta: 'Read More',
-    viz: { variant: 'oscilacion', palette: P.teal, background: DARK, zoom: 1.4 },
+    viz: { variant: 'oscilacion', palette: P.teal, background: DARK, zoom: 2.4 },
   },
   {
     type: 'cover', label: 'Case study',
     title: 'Enterprise AI, in Motion',
     cta: 'Read More',
-    viz: { variant: 'interferencia', palette: P.violet, background: BRAND, zoom: 1.4 },
+    viz: { variant: 'interferencia', palette: P.violet, background: BRAND, zoom: 2.4 },
   },
 ];
 
