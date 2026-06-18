@@ -202,33 +202,68 @@ for (const card of CARDS) {
   addVizControl(node, field, card.viz.zoom);
 }
 
-// Hero 1: split (animación close-up en la zona de imagen) + control.
-const heroViz = document.getElementById('heroviz');
-if (heroViz) {
-  const z = 1.6;
-  const hf = new LineField(heroViz, {
-    variant: 'malla',
-    palette: ['#5ad1ff', '#9b8cff', '#e05bd0'],
-    background: { type: 'gradient', from: '#160a2b', to: '#2a164d' },
-    zoom: z,
-  });
-  fields.push(hf);
-  addVizControl(heroViz, hf, z);
+// ===== Heroes (debajo de las cards) =====
+const PURPLE: Background = { type: 'gradient', from: '#160a2b', to: '#2a164d' };
+const heroesRoot = document.getElementById('heroes')!;
+
+function heroSection(label: string, html: string): HTMLElement {
+  const sec = document.createElement('div');
+  sec.className = 'hero-sec';
+  sec.innerHTML = `<div class="hlabel">${label}</div>${html}`;
+  heroesRoot.appendChild(sec);
+  return sec;
+}
+function mountHero(viz: HTMLElement, variant: VName, palette: string[], background: Background, zoom: number): void {
+  const f = new LineField(viz, { variant, palette, background, zoom });
+  fields.push(f);
+  addVizControl(viz, f, zoom);
 }
 
-// Hero 2: banner full-width minimalista + control.
-const heroViz2 = document.getElementById('heroviz2');
-if (heroViz2) {
-  const z = 1.8;
-  const hf2 = new LineField(heroViz2, {
-    variant: 'flujo',
-    palette: ['#5ad1ff', '#9b8cff', '#e05bd0'],
-    background: { type: 'gradient', from: '#06101a', to: '#0a1b2b' },
-    zoom: z,
-  });
-  fields.push(hf2);
-  addVizControl(heroViz2, hf2, z);
-}
+let hs = heroSection('Hero 1 · split + stats', `
+  <div class="h-split">
+    <div class="viz" data-h="1"></div>
+    <div class="panel">
+      <div class="block purple"><div class="stat">900+</div><div class="sub">A structured view of where enterprise AI is heading</div></div>
+      <div class="block light"><div class="stat">54</div><div class="sub">A structured view of where enterprise AI is heading</div></div>
+    </div>
+  </div>`);
+mountHero(hs.querySelector('[data-h="1"]')!, 'malla', P.violet, PURPLE, 1.6);
+
+hs = heroSection('Hero 2 · banner full-width', `
+  <div class="h-banner">
+    <div class="viz" data-h="2"></div>
+    <div class="overlay"><h2>Systems in motion, made visible</h2><div class="sub">Generative line fields for enterprise storytelling</div></div>
+  </div>`);
+mountHero(hs.querySelector('[data-h="2"]')!, 'flujo', P.teal, DARK, 1.8);
+
+hs = heroSection('Hero 3 · centrado', `
+  <div class="h-centered">
+    <div class="viz" data-h="3"></div>
+    <div class="overlay"><h2>Where enterprise AI is heading</h2><div class="sub">A structured, governed view — delivered in weeks, not quarters.</div></div>
+  </div>`);
+mountHero(hs.querySelector('[data-h="3"]')!, 'oscilacion', P.teal, DARK, 1.5);
+
+hs = heroSection('Hero 4 · texto + animación', `
+  <div class="h-textleft">
+    <div class="text"><span class="kicker">Platform</span><h2>Governed AI, delivered in weeks</h2><button class="pill" style="color:#160a1d;border-color:#0003;background:transparent;">Read More</button></div>
+    <div class="viz" data-h="4"></div>
+  </div>`);
+mountHero(hs.querySelector('[data-h="4"]')!, 'entrelazado', P.violet, BRAND, 1.6);
+
+hs = heroSection('Hero 5 · stat cover', `
+  <div class="h-statcover">
+    <div class="viz" data-h="5"></div>
+    <div class="overlay"><div class="stat">12k+</div><div class="sub">models in production across regulated industries</div></div>
+  </div>`);
+mountHero(hs.querySelector('[data-h="5"]')!, 'cubo', P.cool, DARK, 1.6);
+
+hs = heroSection('Hero 6 · duo', `
+  <div class="h-duo">
+    <div class="half"><div class="viz" data-h="6a"></div><div class="lab">Interference</div></div>
+    <div class="half"><div class="viz" data-h="6b"></div><div class="lab">Folds</div></div>
+  </div>`);
+mountHero(hs.querySelector('[data-h="6a"]')!, 'interferencia', P.violet, BRAND, 2.0);
+mountHero(hs.querySelector('[data-h="6b"]')!, 'pliegues', P.warm, DARK, 1.8);
 
 // Selector de fondo global para las animaciones de las cards.
 const bgbar = document.getElementById('cardbg')!;

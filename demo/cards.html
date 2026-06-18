@@ -85,65 +85,65 @@
   .xcard.cover h2{font-size:30px;color:#fff;}
   .pill.light{background:#ffffff22;border-color:#ffffff77;color:#fff;backdrop-filter:blur(6px);}
 
-  /* hero al final */
-  .herowrap{max-width:1200px;margin:28px auto 0;padding:0 24px;}
-  .hlabel{color:#cfd6e6;font-size:14px;margin-bottom:12px;}
-  .hero{display:flex;height:520px;overflow:hidden;}
-  .hero .viz{flex:1 1 62%;background:#160a2b;position:relative;}
+  /* cover minimalista */
   .xcard.cover.minimal .overlay{background:linear-gradient(180deg,rgba(0,0,0,0) 55%,rgba(0,0,0,.6) 100%);}
   .xcard.cover.minimal h2{font-size:24px;font-weight:600;}
-  /* hero banner full-width minimalista */
-  .banner{position:relative;height:360px;overflow:hidden;margin-top:24px;}
-  .banner .viz{position:absolute;inset:0;background:#06101a;}
-  .banner .overlay{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;
-    padding:0 56px;color:#fff;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,0) 70%);}
-  .banner h2{font-size:40px;font-weight:600;letter-spacing:-.03em;max-width:18ch;}
-  .banner .sub{font-size:16px;opacity:.82;margin-top:14px;}
-  .hero .panel{flex:0 0 38%;display:flex;flex-direction:column;}
-  .hero .block{padding:40px 44px;display:flex;flex-direction:column;}
-  .hero .block.purple{flex:0 0 56%;background:#7a1f9c;color:#fff;}
-  .hero .block.light{flex:1;background:#f3eef6;color:#190a1d;}
-  .hero .stat{font-size:60px;font-weight:600;letter-spacing:-.03em;line-height:1;}
-  .hero .sub{font-size:20px;line-height:1.3;margin-top:18px;max-width:24ch;}
 
-  @media (max-width:880px){ #cards{grid-template-columns:1fr;} .hero{flex-direction:column;height:auto;} .hero .viz{height:300px;} }
+  /* ===== heroes (debajo de las cards) ===== */
+  .herowrap{max-width:1200px;margin:34px auto 0;padding:0 24px;}
+  .hlabel{color:#9aa3b8;font-size:13px;margin:24px 0 12px;letter-spacing:.04em;}
+  .hero-sec h2{font-weight:600;letter-spacing:-.03em;line-height:1.04;}
+
+  .h-split{display:flex;height:520px;overflow:hidden;}
+  .h-split .viz{flex:1 1 62%;background:#160a2b;position:relative;}
+  .h-split .panel{flex:0 0 38%;display:flex;flex-direction:column;}
+  .h-split .block{padding:40px 44px;display:flex;flex-direction:column;}
+  .h-split .block.purple{flex:0 0 56%;background:#7a1f9c;color:#fff;}
+  .h-split .block.light{flex:1;background:#f3eef6;color:#190a1d;}
+  .h-split .stat{font-size:60px;font-weight:600;letter-spacing:-.03em;line-height:1;}
+  .h-split .sub{font-size:20px;margin-top:18px;max-width:24ch;}
+
+  .h-banner{position:relative;height:360px;overflow:hidden;}
+  .h-banner .viz{position:absolute;inset:0;background:#06101a;}
+  .h-banner .overlay{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:0 56px;color:#fff;background:linear-gradient(90deg,rgba(0,0,0,.55),rgba(0,0,0,0) 70%);}
+  .h-banner h2{font-size:42px;max-width:18ch;}
+  .h-banner .sub{font-size:16px;opacity:.82;margin-top:14px;}
+
+  .h-centered{position:relative;height:460px;overflow:hidden;}
+  .h-centered .viz{position:absolute;inset:0;background:#06101a;}
+  .h-centered .overlay{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 40px;color:#fff;background:radial-gradient(60% 60% at 50% 50%,rgba(0,0,0,.5),rgba(0,0,0,.15));}
+  .h-centered h2{font-size:46px;max-width:16ch;}
+  .h-centered .sub{font-size:16px;opacity:.85;margin-top:16px;max-width:40ch;}
+
+  .h-textleft{display:flex;height:500px;overflow:hidden;}
+  .h-textleft .text{flex:0 0 42%;background:#f3eef6;color:#160a1d;padding:44px;display:flex;flex-direction:column;}
+  .h-textleft .text .kicker{opacity:.6;}
+  .h-textleft h2{font-size:36px;margin:24px 0 auto;}
+  .h-textleft .viz{flex:1;background:#06101a;position:relative;}
+
+  .h-statcover{position:relative;height:440px;overflow:hidden;}
+  .h-statcover .viz{position:absolute;inset:0;background:#06101a;}
+  .h-statcover .overlay{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:flex-end;padding:46px;color:#fff;background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,.6) 100%);}
+  .h-statcover .stat{font-size:88px;font-weight:600;letter-spacing:-.04em;line-height:.92;}
+  .h-statcover .sub{font-size:20px;opacity:.85;margin-top:10px;}
+
+  .h-duo{display:flex;gap:2px;height:420px;}
+  .h-duo .half{flex:1;position:relative;overflow:hidden;}
+  .h-duo .half .viz{position:absolute;inset:0;}
+  .h-duo .half .lab{position:absolute;left:22px;bottom:20px;z-index:2;color:#fff;font-size:13px;letter-spacing:.1em;text-transform:uppercase;text-shadow:0 1px 6px #000a;}
+
+  @media (max-width:880px){ #cards{grid-template-columns:1fr;} .h-split,.h-textleft,.h-duo{flex-direction:column;height:auto;} .h-split .viz,.h-textleft .viz{height:300px;} .h-duo .half{height:260px;} }
 </style>
 </head>
 <body>
   <header>
     <h1>Xebia · cards con animación</h1>
-    <a href="./heroes.html">ver heroes →</a>
+    <a href="./">← ver grid</a>
   </header>
   <div class="bgbar" id="cardbg"></div>
   <div id="cards"></div>
 
-  <div class="herowrap">
-    <div class="hlabel">Hero</div>
-    <div class="hero">
-      <div class="viz" id="heroviz"></div>
-      <div class="panel">
-        <div class="block purple">
-          <div class="stat">900+</div>
-          <div class="sub">A structured view of where enterprise AI is heading</div>
-        </div>
-        <div class="block light">
-          <div class="stat">54</div>
-          <div class="sub">A structured view of where enterprise AI is heading</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="herowrap">
-    <div class="hlabel">Hero · banner</div>
-    <div class="banner">
-      <div class="viz" id="heroviz2"></div>
-      <div class="overlay">
-        <h2>Systems in motion, made visible</h2>
-        <div class="sub">Generative line fields for enterprise storytelling</div>
-      </div>
-    </div>
-  </div>
+  <div class="herowrap" id="heroes"></div>
 
   <script type="module" src="./cards.ts"></script>
 </body>
