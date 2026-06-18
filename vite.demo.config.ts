@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 // base must match the repo name for project Pages (https://<user>.github.io/<repo>/).
 export default defineConfig({
   root: 'demo',
-  base: '/xebia-animation-line/',
+  base: '/animation-line/',
   build: {
     outDir: '../site',
     emptyOutDir: true,
