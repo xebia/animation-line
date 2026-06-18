@@ -14,7 +14,7 @@ export interface LineFieldOptions {
   variant: VariantName;
   palette: string[];            // 2+ hex colours → gradient
   background: Background;
-  speed?: number;               // default 0.6 (modo suave); animación autónoma, sin scroll
+  speed?: number;               // default 0.35 (modo suave/lento); animación autónoma, sin scroll
   lineCount?: number;           // optional density override
   zoom?: number;                // default 1; >1 = close-up (amplía y recorta bordes)
 }

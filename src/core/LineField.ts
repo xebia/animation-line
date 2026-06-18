@@ -42,7 +42,7 @@ export class LineField {
   tick(t: number): void {
     const variant = VARIANTS[this.opts.variant];
     const { W, H } = this.renderer!.size;
-    const time = t * (this.opts.speed ?? 0.6); // 0.6 = modo suave por defecto
+    const time = t * (this.opts.speed ?? 0.35); // 0.35 = modo suave (más lento) por defecto
     this.renderer!.draw(variant.generate({ t: time, W, H, lineCount: this.opts.lineCount }));
   }
 
