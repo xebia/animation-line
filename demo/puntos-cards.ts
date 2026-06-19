@@ -2,7 +2,7 @@ import { POINTS, makeCol, PALETTES, BACKGROUNDS, paintBg } from './points';
 import type { PBg, Col } from './points';
 
 let PAL = PALETTES[1];
-let BG: PBg = BACKGROUNDS[1];
+let BG: PBg = BACKGROUNDS[3]; // "Claro" por defecto, igual que Cards líneas
 let col: Col = makeCol(PAL);
 
 interface Viz { cv: HTMLCanvasElement; ctx: CanvasRenderingContext2D; fn: (c: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) => void; w: number; h: number; vis: boolean; zoom: number; }
@@ -78,6 +78,6 @@ function applyLight(): void { document.body.classList.toggle('cards-light', !!BG
 const palEl = document.getElementById('pal')!;
 PALETTES.forEach((p, idx) => { const d = document.createElement('span'); d.className = 'swat' + (idx === 1 ? ' active' : ''); d.style.background = 'linear-gradient(135deg,' + p.join(',') + ')'; d.onclick = () => { PAL = p; col = makeCol(p); [...palEl.children].forEach((c) => c.classList.remove('active')); d.classList.add('active'); }; palEl.appendChild(d); });
 const bgsEl = document.getElementById('bgs')!;
-BACKGROUNDS.forEach((b, idx) => { const d = document.createElement('span'); d.className = 'swat sq' + (idx === 1 ? ' active' : ''); d.title = b.name; d.style.background = b.css; d.onclick = () => { BG = b; applyLight(); [...bgsEl.children].forEach((c) => c.classList.remove('active')); d.classList.add('active'); }; bgsEl.appendChild(d); });
+BACKGROUNDS.forEach((b, idx) => { const d = document.createElement('span'); d.className = 'swat sq' + (idx === 3 ? ' active' : ''); d.title = b.name; d.style.background = b.css; d.onclick = () => { BG = b; applyLight(); [...bgsEl.children].forEach((c) => c.classList.remove('active')); d.classList.add('active'); }; bgsEl.appendChild(d); });
 
 fit(); applyLight(); requestAnimationFrame(frame);
