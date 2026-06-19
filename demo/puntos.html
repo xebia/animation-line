@@ -79,8 +79,8 @@ function esfera(ctx,W,H,t){const cx=W/2,cy=H/2,S=Math.min(W,H)*0.36,ry=t*0.00025
 
 function ptoro(ctx,W,H,t){const S=Math.min(W,H)*0.34,ry=t*0.0004,rx=0.6+0.1*Math.sin(t*0.0003),R=0.6,r=0.28,nu=46,nv=18;
   for(let i=0;i<nu;i++)for(let j=0;j<nv;j++){const u=i/nu*6.283,v=j/nv*6.283;const r2=r*(0.5+0.5*Math.abs(Math.sin(u*3-t*0.001)));const x=(R+r2*Math.cos(v))*Math.cos(u),y=r2*Math.sin(v),z=(R+r2*Math.cos(v))*Math.sin(u);const pr=P3(x,y,z,ry,rx,S,W,H);ctx.fillStyle=col((Math.cos(u)+1)/2);ctx.globalAlpha=0.22+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
-function pcubo(ctx,W,H,t){const S=Math.min(W,H)*0.3,ry=t*0.0004,rx=0.5+0.2*Math.sin(t*0.0003),n=8,g=a=>-1+2*a/(n-1),breathe=1+0.16*Math.sin(t*0.0009),shear=0.32*Math.sin(t*0.0006);
-  for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++){const pr=P3(g(i)*breathe,g(j)*breathe+shear*g(k),g(k)*breathe,ry,rx,S,W,H);ctx.fillStyle=col((g(j)+1)/2);ctx.globalAlpha=0.18+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+function pcubo(ctx,W,H,t){const S=Math.min(W,H)*0.3,ry=t*0.0004,rx=0.5+0.2*Math.sin(t*0.0003),n=8,g=a=>-1+2*a/(n-1),breathe=1+0.18*Math.sin(t*0.0009),tw=1.3*Math.sin(t*0.0005);
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++){const x=g(i)*breathe,y=g(j)*breathe,z=g(k)*breathe,ang=y*tw,xr=x*Math.cos(ang)-z*Math.sin(ang),zr=x*Math.sin(ang)+z*Math.cos(ang);const pr=P3(xr,y,zr,ry,rx,S);ctx.fillStyle=col((g(j)+1)/2);ctx.globalAlpha=0.18+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
 function pterreno(ctx,W,H,t){const S=Math.min(W,H)*0.32,ry=t*0.0002,rx=0.95,g=34;
   for(let i=0;i<g;i++)for(let j=0;j<g;j++){const x=(i/(g-1)-0.5)*2,z=(j/(g-1)-0.5)*2,y=0.35*Math.sin(x*3+t*0.001)*Math.cos(z*3-t*0.0008);const pr=P3(x,y,z,ry,rx,S,W,H);ctx.fillStyle=col((y+0.4)/0.8);ctx.globalAlpha=0.22+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
 function pgalaxia(ctx,W,H,t){const S=Math.min(W,H)*0.42,ry=t*0.0003,rx=1.0,N=700,arms=3;
@@ -111,7 +111,22 @@ function neural(ctx,W,H,t){const layers=[5,8,8,5,3],pad=0.12,cols=[];
   for(let l=0;l<cols.length-1;l++)for(const a of cols[l])for(const b of cols[l+1]){const lit=(a.act+b.act)/2;ctx.strokeStyle=col(0.35+0.4*lit);ctx.globalAlpha=0.05+0.18*lit;ctx.lineWidth=0.5+lit;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}ctx.globalAlpha=1;
   for(let l=0;l<cols.length-1;l++){const A=cols[l],B=cols[l+1];for(let k=0;k<A.length*2;k++){const a=A[k%A.length],b=B[(k*3)%B.length],tp=(t*0.0007+k*0.13+l*0.25)%1;ctx.fillStyle=col(0.7);ctx.globalAlpha=0.55;ctx.beginPath();ctx.arc(a.x+(b.x-a.x)*tp,a.y+(b.y-a.y)*tp,1.6,0,6.283);ctx.fill();}}ctx.globalAlpha=1;
   for(const arr of cols)for(const nd of arr){ctx.fillStyle=col(nd.act);ctx.globalAlpha=0.5+0.5*nd.act;ctx.beginPath();ctx.arc(nd.x,nd.y,3+nd.act*5,0,6.283);ctx.fill();if(nd.act>0.85){ctx.strokeStyle=col(0.8);ctx.globalAlpha=0.5;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(nd.x,nd.y,3+nd.act*5+4,0,6.283);ctx.stroke();}}ctx.globalAlpha=1;}
-const OPTS=[['Onda partículas',pondas],['Cresta',pcresta],['Remolino',premolino],['Datos',datos],['Red neuronal',neural],['Fusión 3D',fusion],['Toro 3D',ptoro],['Cubo 3D',pcubo],['Montañas',montanas],['Olas',olas],['Deriva',deriva],['Onda',onda],['Constelación',constelacion],['Esfera 3D',esfera]];
+// ADN: doble hélice de puntos (data strands) con peldaños, girando
+function adn(ctx,W,H,t){const S=Math.min(W,H)*0.4,ry=t*0.0004,rx=0.5+0.15*Math.sin(t*0.0003),N=120,turns=3,len=1.9,r=0.4;
+  const node=(strand,u)=>{const x=-len/2+u*len,th=u*turns*6.283+t*0.0006+strand*Math.PI;return{x,y:r*Math.cos(th),z:r*Math.sin(th)};};
+  for(let i=0;i<N;i++){const u=i/(N-1);
+    if(i%5===0){const a=node(0,u),b=node(1,u),pa=P3(a.x,a.y,a.z,ry,rx,S),pb=P3(b.x,b.y,b.z,ry,rx,S);ctx.strokeStyle=col(0.5);ctx.globalAlpha=0.22;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pa.X,pa.Y);ctx.lineTo(pb.X,pb.Y);ctx.stroke();}
+    for(const strand of [0,1]){const p=node(strand,u),pr=P3(p.x,p.y,p.z,ry,rx,S);ctx.fillStyle=col(strand?0.2:0.85);ctx.globalAlpha=0.3+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.4*pr.sc+0.5,0,6.283);ctx.fill();}
+  }ctx.globalAlpha=1;}
+// TÚNEL: anillos de puntos que fluyen hacia la cámara y te envuelven
+function tunel(ctx,W,H,t){const S=Math.min(W,H)*0.5,rings=44,per=46,r=0.78;
+  for(let j=0;j<rings;j++){let zc=(j/rings)*4-(t*0.0006)%4;zc=((zc%4)+4)%4-2;const wob=0.16*Math.sin(zc*2+t*0.0008);
+    for(let i=0;i<per;i++){const a=i/per*6.283,rr=r+wob,pr=P3(rr*Math.cos(a),rr*Math.sin(a),zc,0,0.18,S);if(pr.sc<=0)continue;ctx.fillStyle=col(a/6.283);ctx.globalAlpha=Math.max(0,0.12+0.72*pr.sc);ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.3,0,6.283);ctx.fill();}
+  }ctx.globalAlpha=1;}
+// MORPH: la nube transiciona fluyendo entre esfera y toro
+function morph(ctx,W,H,t){const S=Math.min(W,H)*0.36,ry=t*0.0004,rx=0.5,m=0.5+0.5*Math.sin(t*0.0004);
+  for(let i=0;i<SPH.length;i++){const p=SPH[i],lon=Math.atan2(p.z,p.x),lat=Math.asin(Math.max(-1,Math.min(1,p.y))),R=0.55,r=0.25,c=Math.cos(lat*2),tx=(R+r*c)*Math.cos(lon),ty=r*Math.sin(lat*2),tz=(R+r*c)*Math.sin(lon),x=p.x*(1-m)+tx*m,y=p.y*(1-m)+ty*m,z=p.z*(1-m)+tz*m,pr=P3(x,y,z,ry,rx,S);ctx.fillStyle=col((p.y+1)/2);ctx.globalAlpha=0.3+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.3*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+const OPTS=[['Onda partículas',pondas],['Cresta',pcresta],['Remolino',premolino],['Datos',datos],['Red neuronal',neural],['ADN',adn],['Túnel',tunel],['Morph',morph],['Fusión 3D',fusion],['Toro 3D',ptoro],['Cubo 3D',pcubo],['Montañas',montanas],['Olas',olas],['Deriva',deriva],['Onda',onda],['Constelación',constelacion],['Esfera 3D',esfera]];
 const grid=document.getElementById('grid');
 const cards=[];
 const DPR=Math.min(devicePixelRatio||1,2);
