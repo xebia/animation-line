@@ -73,6 +73,9 @@
   .bgbar .bgdot{width:24px;height:24px;border-radius:7px;cursor:pointer;border:2px solid #ffffff40;transition:transform .12s;}
   .bgbar .bgdot:hover{transform:scale(1.12);}
   .bgbar .bgdot.active{border-color:#fff;transform:scale(1.12);}
+  .bgbar .grp{display:flex;gap:8px;align-items:center;}
+  .bgbar .pdot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid #ffffff40;transition:transform .12s;}
+  .bgbar .pdot:hover{transform:scale(1.12);} .bgbar .pdot.active{border-color:#fff;transform:scale(1.12);}
   /* control de zoom por card */
   .zoomctl{position:absolute;top:10px;right:10px;z-index:6;display:flex;align-items:center;gap:6px;
     background:#0009;border:1px solid #ffffff33;border-radius:99px;padding:4px 8px;backdrop-filter:blur(6px);}
@@ -180,7 +183,10 @@
     <a class="active" href="./cards.html">Cards líneas</a>
     <a href="./puntos-cards.html">Cards puntos</a>
   </nav>
-  <div class="bgbar" id="cardbg"></div>
+  <div class="bgbar">
+    <span class="blabel">Paleta</span><span class="grp" id="cardpal"></span>
+    <span class="blabel" style="margin-left:16px;">Fondo</span><span class="grp" id="cardbg"></span>
+  </div>
   <div id="cards"></div>
 
   <div class="herowrap" id="heroes"></div>

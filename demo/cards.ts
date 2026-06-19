@@ -346,12 +346,26 @@ hs = heroSection('Hero 19 · duo (cono · embudo)', `
 mountHero(hs.querySelector('[data-h="19a"]')!, { variant: 'cono', palette: P.warm, background: BRAND, zoom: 1.5 });
 mountHero(hs.querySelector('[data-h="19b"]')!, { variant: 'embudo', palette: P.violet, background: PURPLE, zoom: 1.5 });
 
+// Selector de paleta global (gradiente de las líneas).
+const PALETTES = [
+  ['#3fd6a0', '#5ad1ff', '#9b8cff'], ['#ff9bc4', '#b18cff', '#5ad1ff'], ['#ffd27a', '#ff8f6b', '#c96bff'],
+  ['#7be0c0', '#4aa3ff', '#0d2b4a'], ['#a0f0c8', '#ffe08a', '#ff8f6b'], ['#8be9ff', '#c9a0ff', '#ff9bd6'],
+];
+const palbar = document.getElementById('cardpal')!;
+PALETTES.forEach((p) => {
+  const d = document.createElement('span');
+  d.className = 'pdot';
+  d.style.background = 'linear-gradient(135deg,' + p.join(',') + ')';
+  d.onclick = () => {
+    slots.forEach((s) => { s.opts.palette = p; s.field?.setOptions({ palette: p }); });
+    [...palbar.children].forEach((c) => c.classList.remove('active'));
+    d.classList.add('active');
+  };
+  palbar.appendChild(d);
+});
+
 // Selector de fondo global (aplica a todas las animaciones, vivas o futuras).
 const bgbar = document.getElementById('cardbg')!;
-const blabel = document.createElement('span');
-blabel.className = 'blabel';
-blabel.textContent = 'Fondo de las animaciones';
-bgbar.appendChild(blabel);
 BACKGROUNDS.forEach((b) => {
   const dot = document.createElement('span');
   dot.className = 'bgdot' + (b.name === 'Claro' ? ' active' : '');
