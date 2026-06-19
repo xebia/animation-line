@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>xebia-animation-line · puntos</title>
+<style>
+  *{box-sizing:border-box;margin:0;}
+  body{background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#cde;}
+  .nav{position:sticky;top:0;z-index:40;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 18px;background:rgba(5,8,15,.82);backdrop-filter:blur(8px);border-bottom:1px solid #ffffff14;}
+  .nav a{color:#cfd6e6;text-decoration:none;font-size:13px;white-space:nowrap;flex:0 0 auto;padding:6px 13px;border-radius:99px;border:1px solid #ffffff22;}
+  .nav a.home{margin-right:10px;font-weight:700;border:none;font-size:14px;}
+  .nav a.active{background:#fff;color:#0a1a24;border-color:#fff;}
+  .nav a:not(.active):not(.home):hover{background:#ffffff16;border-color:#ffffff66;}
+  .ctrls{position:sticky;top:47px;z-index:30;display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;
+    padding:12px 20px;background:rgba(5,8,15,.78);backdrop-filter:blur(8px);border-bottom:1px solid #ffffff10;}
+  .ctrls .grp{display:flex;gap:7px;align-items:center;}
+  .ctrls .lbl{font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:.08em;}
+  .swat{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid #ffffff44;}
+  .swat.sq{border-radius:6px;}
+  .swat.active{border-color:#fff;transform:scale(1.12);}
+  #grid{max-width:1500px;margin:0 auto;padding:22px;display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  .card{position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;background:#06101a;border:1px solid #ffffff14;box-shadow:0 8px 30px #0006;}
+  .card canvas{position:absolute;inset:0;width:100%;height:100%;}
+  .card .label{position:absolute;left:14px;top:12px;z-index:2;font-size:12px;letter-spacing:.09em;text-transform:uppercase;opacity:.92;text-shadow:0 1px 6px #000a;}
+  @media (max-width:900px){ #grid{grid-template-columns:1fr;} .card{aspect-ratio:16/9;} }
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a class="home" href="./">Xebia</a>
+    <a href="./lineas.html">Líneas</a>
+    <a class="active" href="./puntos.html">Puntos</a>
+    <a href="./cards.html">Cards líneas</a>
+    <a href="./puntos-cards.html">Cards puntos</a>
+    <a href="./imagen.html">Imagen</a>
+  </nav>
+  <div class="ctrls">
+    <div class="grp"><span class="lbl">Paleta</span><span id="pal" style="display:flex;gap:7px;"></span></div>
+    <div class="grp"><span class="lbl">Fondo</span><span id="bgs" style="display:flex;gap:7px;"></span></div>
+  </div>
+  <div id="grid"></div>
+
+<script>
+const PALETTES=[['#3fd6a0','#5ad1ff','#9b8cff'],['#ff9bc4','#b18cff','#5ad1ff'],['#ffd27a','#ff8f6b','#c96bff'],['#7be0c0','#4aa3ff','#0d2b4a'],['#a0f0c8','#ffe08a','#ff8f6b'],['#8be9ff','#c9a0ff','#ff9bd6'],['#ffffff','#eaf1ff','#ffffff']];
+let PAL=PALETTES[1];
+const BACKGROUNDS=[
+  {name:'Oscuro',from:'#06101a',to:'#0a1b2b',css:'linear-gradient(135deg,#06101a,#0a1b2b)'},
+  {name:'Marca',from:'#0b1f3a',to:'#3a1d5c',css:'linear-gradient(135deg,#0b1f3a,#3a1d5c)'},
+  {name:'Negro',solid:'#000000',css:'#000000'},
+  {name:'Claro',solid:'#f3ecf6',css:'#f3ecf6'},
+  {name:'Lavanda',from:'#eef0ff',to:'#dfeaff',css:'linear-gradient(135deg,#eef0ff,#dfeaff)'},
+];
+let BG=BACKGROUNDS[1];
+
+function mix(c1,c2,t){const a=parseInt(c1.slice(1),16),b=parseInt(c2.slice(1),16);return `rgb(${Math.round((((a>>16)&255)+((((b>>16)&255)-((a>>16)&255))*t)))},${Math.round((((a>>8)&255)+((((b>>8)&255)-((a>>8)&255))*t)))},${Math.round(((a&255)+(((b&255)-(a&255))*t)))})`;}
+function col(t){t=Math.max(0,Math.min(1,t));const s=t*(PAL.length-1),i=Math.min(Math.floor(s),PAL.length-2);return mix(PAL[i],PAL[i+1],s-i);}
+function bg(ctx,W,H){if(BG.solid){ctx.fillStyle=BG.solid;}else{const g=ctx.createLinearGradient(0,H,W,0);g.addColorStop(0,BG.from);g.addColorStop(1,BG.to);ctx.fillStyle=g;}ctx.fillRect(0,0,W,H);}
+function P3(x,y,z,ry,rx,S,W,H){const x1=x*Math.cos(ry)-z*Math.sin(ry),z1=x*Math.sin(ry)+z*Math.cos(ry);const y1=y*Math.cos(rx)-z1*Math.sin(rx),z2=y*Math.sin(rx)+z1*Math.cos(rx);const sc=4.2/(4.2+z2);return{X:W/2+x1*S*sc,Y:H/2+y1*S*sc,sc};}
+
+const SPH=[];(function(){const n=420;for(let i=0;i<n;i++){const y=1-(i/(n-1))*2;const r=Math.sqrt(1-y*y);const th=i*2.399963;SPH.push({x:Math.cos(th)*r,y,z:Math.sin(th)*r});}})();
+const STARS=[];(function(){let sd=9;const r=()=>{sd=(sd*9301+49297)%233280;return sd/233280;};for(let i=0;i<70;i++)STARS.push({x:r(),y:r(),px:r()*6.283,py:r()*6.283});})();
+
+function fusion(ctx,W,H,t){const S=Math.min(W,H)*0.32,ry=t*0.0003,rx=0.5,sep=Math.sin(t*0.0005)*0.75;
+  [-1,1].forEach((side,ci)=>{SPH.forEach((p)=>{const pr=P3(p.x*0.72+side*sep,p.y*0.72,p.z*0.72,ry,rx,S,W,H);ctx.fillStyle=col(ci?(p.y+1)/2:1-(p.y+1)/2);ctx.globalAlpha=0.25+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.2*pr.sc+0.5,0,6.283);ctx.fill();});});ctx.globalAlpha=1;}
+function vortice(ctx,W,H,t){const S=Math.min(W,H)*0.42,ry=t*0.0004,rx=0.95,N=560,turns=4;
+  for(let i=0;i<N;i++){const u=i/N,th=u*turns*6.283+t*0.0008,rad=0.85*(1-u)+0.04,y=-0.9+u*1.8;const pr=P3(rad*Math.cos(th),y,rad*Math.sin(th),ry,rx,S,W,H);ctx.fillStyle=col(u);ctx.globalAlpha=0.25+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.2*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+function montanas(ctx,W,H,t){const S=Math.min(W,H)*0.82,rx=0.6,gx=120,gz=52;
+  for(let j=gz-1;j>=0;j--){const z=(j/(gz-1)-0.5)*3.6;for(let i=0;i<gx;i++){const un=i/(gx-1),x=(un-0.5)*4.4;
+    const ridge=Math.abs(Math.sin(x*1.0+0.4*Math.sin(z*0.8)));
+    const y=0.7*ridge-0.15+0.18*Math.sin(x*0.5+z*0.7-t*0.0006);
+    const pr=P3(x,y,z,0,rx,S,W,H);ctx.fillStyle=col(un);ctx.globalAlpha=0.2+0.65*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,0.9*pr.sc+0.4,0,6.283);ctx.fill();}}ctx.globalAlpha=1;}
+function olas(ctx,W,H,t){const S=Math.min(W,H)*0.8,rx=0.58,gx=120,gz=54;
+  for(let j=gz-1;j>=0;j--){const z=(j/(gz-1)-0.5)*3.6;for(let i=0;i<gx;i++){const un=i/(gx-1),x=(un-0.5)*4.4;
+    const y=0.3*Math.sin(x*1.3-t*0.0009)+0.22*Math.sin(z*1.5-t*0.0007)+0.13*Math.sin((x+z)*2.0-t*0.0005);
+    const pr=P3(x,y,z,0,rx,S,W,H);ctx.fillStyle=col(un);ctx.globalAlpha=0.2+0.65*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,0.9*pr.sc+0.4,0,6.283);ctx.fill();}}ctx.globalAlpha=1;}
+function deriva(ctx,W,H,t){const gx=40,gy=26;for(let i=0;i<gx;i++)for(let j=0;j<gy;j++){const bx=(i+0.5)/gx*W,by=(j+0.5)/gy*H;const a=Math.sin(bx*0.004+t*0.0003)*1.6+Math.cos(by*0.005-t*0.0002)*1.4;ctx.fillStyle=col((i+j)/(gx+gy));ctx.globalAlpha=0.9;ctx.beginPath();ctx.arc(bx+Math.cos(a)*10,by+Math.sin(a)*10,1.7,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+function onda(ctx,W,H,t){const gx=48,gy=30;for(let i=0;i<gx;i++)for(let j=0;j<gy;j++){const x=(i+0.5)/gx*W,y=(j+0.5)/gy*H;const w=Math.sin((i*0.5+j*0.5)-t*0.0018);ctx.fillStyle=col(j/gy);ctx.globalAlpha=0.35+0.5*(0.5+0.5*w);ctx.beginPath();ctx.arc(x,y,1.2+1.8*(0.5+0.5*w),0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+function constelacion(ctx,W,H,t){const pts=STARS.map(n=>({x:(0.05+n.x*0.9)*W+Math.sin(t*0.0003+n.px)*16,y:(0.08+n.y*0.84)*H+Math.cos(t*0.00026+n.py)*16}));for(let i=0;i<pts.length;i++)for(let k=i+1;k<pts.length;k++){const dx=pts[i].x-pts[k].x,dy=pts[i].y-pts[k].y,d=Math.hypot(dx,dy);if(d<W*0.12){ctx.strokeStyle=col(i/pts.length);ctx.globalAlpha=0.18*(1-d/(W*0.12));ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[k].x,pts[k].y);ctx.stroke();}}ctx.globalAlpha=1;pts.forEach((p,i)=>{ctx.fillStyle=col(i/pts.length);ctx.beginPath();ctx.arc(p.x,p.y,2.1,0,6.283);ctx.fill();});}
+function esfera(ctx,W,H,t){const cx=W/2,cy=H/2,S=Math.min(W,H)*0.36,ry=t*0.00025,rx=0.5;SPH.forEach((p)=>{const rr=0.85+0.15*Math.sin(p.y*5-t*0.0012);const pr=P3(p.x*rr,p.y*rr,p.z*rr,ry,rx,S,W,H);ctx.fillStyle=col((p.y+1)/2);ctx.globalAlpha=0.35+0.55*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.3*pr.sc+0.5,0,6.283);ctx.fill();});ctx.globalAlpha=1;}
+
+function ptoro(ctx,W,H,t){const S=Math.min(W,H)*0.34,ry=t*0.0004,rx=0.6+0.1*Math.sin(t*0.0003),R=0.6,r=0.28,nu=46,nv=18;
+  for(let i=0;i<nu;i++)for(let j=0;j<nv;j++){const u=i/nu*6.283,v=j/nv*6.283;const r2=r*(0.5+0.5*Math.abs(Math.sin(u*3-t*0.001)));const x=(R+r2*Math.cos(v))*Math.cos(u),y=r2*Math.sin(v),z=(R+r2*Math.cos(v))*Math.sin(u);const pr=P3(x,y,z,ry,rx,S,W,H);ctx.fillStyle=col((Math.cos(u)+1)/2);ctx.globalAlpha=0.22+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+function pcubo(ctx,W,H,t){const S=Math.min(W,H)*0.3,ry=t*0.0004,rx=0.5+0.2*Math.sin(t*0.0003),n=8,g=a=>-1+2*a/(n-1),breathe=1+0.18*Math.sin(t*0.0009),tw=1.3*Math.sin(t*0.0005);
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++)for(let k=0;k<n;k++){const x=g(i)*breathe,y=g(j)*breathe,z=g(k)*breathe,ang=y*tw,xr=x*Math.cos(ang)-z*Math.sin(ang),zr=x*Math.sin(ang)+z*Math.cos(ang);const pr=P3(xr,y,zr,ry,rx,S,W,H);ctx.fillStyle=col((g(j)+1)/2);ctx.globalAlpha=0.18+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+function pterreno(ctx,W,H,t){const S=Math.min(W,H)*0.32,ry=t*0.0002,rx=0.95,g=34;
+  for(let i=0;i<g;i++)for(let j=0;j<g;j++){const x=(i/(g-1)-0.5)*2,z=(j/(g-1)-0.5)*2,y=0.35*Math.sin(x*3+t*0.001)*Math.cos(z*3-t*0.0008);const pr=P3(x,y,z,ry,rx,S,W,H);ctx.fillStyle=col((y+0.4)/0.8);ctx.globalAlpha=0.22+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+function pgalaxia(ctx,W,H,t){const S=Math.min(W,H)*0.42,ry=t*0.0003,rx=1.0,N=700,arms=3;
+  for(let i=0;i<N;i++){const u=i/N,arm=Math.floor(u*arms),rad=0.9*Math.sqrt(u),ang=rad*4+arm/arms*6.283+t*0.0005,y=0.06*Math.sin(rad*8-t*0.001);const pr=P3(rad*Math.cos(ang),y,rad*Math.sin(ang),ry,rx,S,W,H);ctx.fillStyle=col(rad);ctx.globalAlpha=0.22+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+// Campo de partículas en perspectiva (color por posición = paleta de marca)
+function pondas(ctx,W,H,t){const S=Math.min(W,H)*0.82,rx=0.7,gx=124,gz=60;
+  for(let j=gz-1;j>=0;j--){const z=(j/(gz-1)-0.5)*3.6;for(let i=0;i<gx;i++){const un=i/(gx-1);const gx2=un+0.07*Math.sin(un*18-t*0.0009);const x=(gx2-0.5)*4.4;
+    const y=0.5*Math.sin(x*1.3+z*1.1-t*0.0009)+0.25*Math.sin(x*2.6-t*0.0005)+0.15*Math.sin(z*2.0+t*0.0006);
+    const pr=P3(x,y,z,0,rx,S,W,H);ctx.fillStyle=col(un);ctx.globalAlpha=0.2+0.65*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,0.9*pr.sc+0.4,0,6.283);ctx.fill();}}ctx.globalAlpha=1;}
+function pcresta(ctx,W,H,t){const S=Math.min(W,H)*0.82,rx=0.7,gx=124,gz=60,xc=Math.sin(t*0.0004)*1.4;
+  for(let j=gz-1;j>=0;j--){const z=(j/(gz-1)-0.5)*3.6;for(let i=0;i<gx;i++){const un=i/(gx-1),x=(un-0.5)*4.4;
+    const y=0.95*Math.exp(-Math.pow(x-xc,2)*1.5)+0.16*Math.sin(z*3-t*0.001)+0.1*Math.sin(x*4-t*0.0006);
+    const pr=P3(x,y,z,0,rx,S,W,H);ctx.fillStyle=col(un);ctx.globalAlpha=0.2+0.65*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,0.9*pr.sc+0.4,0,6.283);ctx.fill();}}ctx.globalAlpha=1;}
+function premolino(ctx,W,H,t){const S=Math.min(W,H)*0.8,rx=0.65,gx=112,gz=60,cxw=Math.sin(t*0.0003)*1.0,czw=Math.cos(t*0.00025)*0.9;
+  for(let j=gz-1;j>=0;j--){const z=(j/(gz-1)-0.5)*3.6;for(let i=0;i<gx;i++){const un=i/(gx-1),x=(un-0.5)*4.4;const dx=x-cxw,dz=z-czw,d=Math.hypot(dx,dz),ang=Math.atan2(dz,dx)+(1.4/(d+0.4))*Math.sin(t*0.0006);
+    const y=0.4*Math.sin(d*3-t*0.001)+0.2;
+    const pr=P3(cxw+Math.cos(ang)*d,y,czw+Math.sin(ang)*d,0,rx,S,W,H);ctx.fillStyle=col(un);ctx.globalAlpha=0.2+0.65*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,0.9*pr.sc+0.4,0,6.283);ctx.fill();}}ctx.globalAlpha=1;}
+// DATOS: rejilla de puntos cuyo grosor representa un valor que fluye (métricas vivas)
+function datos(ctx,W,H,t){const gx=46,gy=30;
+  for(let i=0;i<gx;i++)for(let j=0;j<gy;j++){const x=(i+0.5)/gx*W,y=(j+0.5)/gy*H;
+    let val=0.5+0.5*Math.sin(i*0.55-t*0.0012)*Math.cos(j*0.7+t*0.0009);
+    val=Math.pow(Math.max(0,val),2.0);
+    ctx.fillStyle=col(val);ctx.globalAlpha=0.3+0.6*val;
+    ctx.beginPath();ctx.arc(x,y,1+val*5.5,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+// RED NEURONAL: capas de nodos (tamaño = activación) con señales viajando por las conexiones
+function neural(ctx,W,H,t){const layers=[5,8,8,5,3],pad=0.12,cols=[];
+  layers.forEach((cnt,l)=>{const x=W*(pad+(1-2*pad)*l/(layers.length-1));const arr=[];for(let n=0;n<cnt;n++){const y=H*0.5+(n-(cnt-1)/2)*Math.min(H*0.13,H*0.8/cnt);arr.push({x,y,act:0.4+0.6*Math.abs(Math.sin(t*0.0016+l*0.7+n*1.1))});}cols.push(arr);});
+  for(let l=0;l<cols.length-1;l++)for(const a of cols[l])for(const b of cols[l+1]){const lit=(a.act+b.act)/2;ctx.strokeStyle=col(0.35+0.4*lit);ctx.globalAlpha=0.05+0.18*lit;ctx.lineWidth=0.5+lit;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}ctx.globalAlpha=1;
+  for(let l=0;l<cols.length-1;l++){const A=cols[l],B=cols[l+1];for(let k=0;k<A.length*2;k++){const a=A[k%A.length],b=B[(k*3)%B.length],tp=(t*0.0007+k*0.13+l*0.25)%1;ctx.fillStyle=col(0.7);ctx.globalAlpha=0.55;ctx.beginPath();ctx.arc(a.x+(b.x-a.x)*tp,a.y+(b.y-a.y)*tp,1.6,0,6.283);ctx.fill();}}ctx.globalAlpha=1;
+  for(const arr of cols)for(const nd of arr){ctx.fillStyle=col(nd.act);ctx.globalAlpha=0.5+0.5*nd.act;ctx.beginPath();ctx.arc(nd.x,nd.y,3+nd.act*5,0,6.283);ctx.fill();if(nd.act>0.85){ctx.strokeStyle=col(0.8);ctx.globalAlpha=0.5;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(nd.x,nd.y,3+nd.act*5+4,0,6.283);ctx.stroke();}}ctx.globalAlpha=1;}
+// ADN: doble hélice de puntos (data strands) con peldaños, girando
+function adn(ctx,W,H,t){const S=Math.min(W,H)*0.4,ry=t*0.0004,rx=0.5+0.15*Math.sin(t*0.0003),N=120,turns=3,len=1.9,r=0.4;
+  const node=(strand,u)=>{const x=-len/2+u*len,th=u*turns*6.283+t*0.0006+strand*Math.PI;return{x,y:r*Math.cos(th),z:r*Math.sin(th)};};
+  for(let i=0;i<N;i++){const u=i/(N-1);
+    if(i%5===0){const a=node(0,u),b=node(1,u),pa=P3(a.x,a.y,a.z,ry,rx,S,W,H),pb=P3(b.x,b.y,b.z,ry,rx,S,W,H);ctx.strokeStyle=col(0.5);ctx.globalAlpha=0.22;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pa.X,pa.Y);ctx.lineTo(pb.X,pb.Y);ctx.stroke();}
+    for(const strand of [0,1]){const p=node(strand,u),pr=P3(p.x,p.y,p.z,ry,rx,S,W,H);ctx.fillStyle=col(strand?0.2:0.85);ctx.globalAlpha=0.3+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.4*pr.sc+0.5,0,6.283);ctx.fill();}
+  }ctx.globalAlpha=1;}
+// TÚNEL: anillos de puntos que fluyen hacia la cámara y te envuelven
+function tunel(ctx,W,H,t){const S=Math.min(W,H)*0.5,rings=44,per=46,r=0.78;
+  for(let j=0;j<rings;j++){let zc=(j/rings)*4-(t*0.0006)%4;zc=((zc%4)+4)%4-2;const wob=0.16*Math.sin(zc*2+t*0.0008);
+    for(let i=0;i<per;i++){const a=i/per*6.283,rr=r+wob,pr=P3(rr*Math.cos(a),rr*Math.sin(a),zc,0,0.18,S,W,H);if(pr.sc<=0)continue;ctx.fillStyle=col(a/6.283);ctx.globalAlpha=Math.max(0,0.12+0.72*pr.sc);ctx.beginPath();ctx.arc(pr.X,pr.Y,1.1*pr.sc+0.3,0,6.283);ctx.fill();}
+  }ctx.globalAlpha=1;}
+// MORPH: la nube transiciona fluyendo entre esfera y toro
+function morph(ctx,W,H,t){const S=Math.min(W,H)*0.36,ry=t*0.0004,rx=0.5,m=0.5+0.5*Math.sin(t*0.0004);
+  for(let i=0;i<SPH.length;i++){const p=SPH[i],lon=Math.atan2(p.z,p.x),lat=Math.asin(Math.max(-1,Math.min(1,p.y))),R=0.55,r=0.25,c=Math.cos(lat*2),tx=(R+r*c)*Math.cos(lon),ty=r*Math.sin(lat*2),tz=(R+r*c)*Math.sin(lon),x=p.x*(1-m)+tx*m,y=p.y*(1-m)+ty*m,z=p.z*(1-m)+tz*m,pr=P3(x,y,z,ry,rx,S,W,H);ctx.fillStyle=col((p.y+1)/2);ctx.globalAlpha=0.3+0.6*pr.sc;ctx.beginPath();ctx.arc(pr.X,pr.Y,1.3*pr.sc+0.4,0,6.283);ctx.fill();}ctx.globalAlpha=1;}
+const OPTS=[['Onda partículas',pondas],['Cresta',pcresta],['Remolino',premolino],['Datos',datos],['ADN',adn],['Túnel',tunel],['Morph',morph],['Fusión 3D',fusion],['Toro 3D',ptoro],['Cubo 3D',pcubo],['Montañas',montanas],['Olas',olas],['Deriva',deriva],['Onda',onda],['Constelación',constelacion],['Esfera 3D',esfera]];
+const grid=document.getElementById('grid');
+const cards=[];
+const DPR=Math.min(devicePixelRatio||1,2);
+OPTS.forEach(([label,fn])=>{
+  const card=document.createElement('div');card.className='card';
+  const cv=document.createElement('canvas');
+  const lb=document.createElement('span');lb.className='label';lb.textContent=label;
+  card.append(cv,lb);grid.appendChild(card);
+  cards.push({cv,ctx:cv.getContext('2d'),fn,w:1,h:1,vis:true});
+});
+const vio=new IntersectionObserver(es=>{es.forEach(e=>{const c=cards.find(x=>x.cv===e.target);if(c)c.vis=e.isIntersecting;});},{rootMargin:'250px'});
+cards.forEach(c=>vio.observe(c.cv));
+function fit(){for(const c of cards){const r=c.cv.getBoundingClientRect();c.w=r.width;c.h=r.height;c.cv.width=r.width*DPR;c.cv.height=r.height*DPR;c.ctx.setTransform(DPR,0,0,DPR,0,0);}}
+addEventListener('resize',fit);
+function frame(t){const ts=t*0.55;for(const c of cards){if(!c.vis)continue;bg(c.ctx,c.w,c.h);c.fn(c.ctx,c.w,c.h,ts);}requestAnimationFrame(frame);}
+
+const palEl=document.getElementById('pal');
+PALETTES.forEach((p,idx)=>{const d=document.createElement('span');d.className='swat'+(idx===1?' active':'');d.style.background='linear-gradient(135deg,'+p.join(',')+')';d.onclick=()=>{PAL=p;[...palEl.children].forEach(c=>c.classList.remove('active'));d.classList.add('active');};palEl.appendChild(d);});
+const bgsEl=document.getElementById('bgs');
+BACKGROUNDS.forEach((b,idx)=>{const d=document.createElement('span');d.className='swat sq'+(idx===1?' active':'');d.title=b.name;d.style.background=b.css;d.onclick=()=>{BG=b;[...bgsEl.children].forEach(c=>c.classList.remove('active'));d.classList.add('active');};bgsEl.appendChild(d);});
+
+fit();requestAnimationFrame(frame);
+</script>
+</body>
+</html>
