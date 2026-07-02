@@ -551,8 +551,8 @@ const inMask = (m: ImageData, x: number, y: number) =>
 
 // Palabra en lineas: franjas horizontales onduladas recortadas por el texto (estilo "People")
 let wordBuf: HTMLCanvasElement | null = null;
-export function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const word = 'Xebia', SS = 2; // supersampling para nitidez en pantallas retina
+export function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col, word = 'Xebia') {
+  const SS = 2; // supersampling para nitidez en pantallas retina
   if (!wordBuf) wordBuf = document.createElement('canvas');
   const bw = Math.round(W * SS), bh = Math.round(H * SS);
   if (wordBuf.width !== bw || wordBuf.height !== bh) { wordBuf.width = bw; wordBuf.height = bh; }
@@ -588,13 +588,12 @@ export function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: numbe
 }
 // Palabra en puntos: halftone que se ensambla desde una nube dispersa (estilo "AI")
 const dotsCache = new Map<string, { x: number; y: number }[]>();
-function palabraPuntos(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const word = 'AI';
+export const textoPuntos = (word: string) => function palabraPuntos(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
   const key = word + '|' + (W | 0) + 'x' + (H | 0);
   let pts = dotsCache.get(key);
   if (!pts) {
     const m = textMask(word, W | 0, H | 0);
-    const step = Math.max(5, H / 40);
+    const step = Math.max(3.5, H / 68);
     pts = [];
     for (let y = step / 2, r = 0; y < H; y += step, r++) {
       for (let x = step / 2 + (r % 2) * step * 0.5; x < W; x += step) {
@@ -614,16 +613,18 @@ function palabraPuntos(ctx: CanvasRenderingContext2D, W: number, H: number, t: n
     // cuando esta ensamblada, una onda de brillo recorre la palabra
     const wave = 0.5 + 0.5 * Math.sin(p.x * 0.012 + p.y * 0.006 - t * 0.0022);
     ctx.fillStyle = col(0.15 + 0.55 * (p.y / H) + 0.3 * wave);
-    ctx.globalAlpha = (0.2 + 0.4 * tw) * (1 - m01) + (0.35 + 0.55 * wave) * m01;
-    ctx.beginPath(); ctx.arc(x, y, (1 + 1.2 * tw) * (1 - m01) + (1.2 + 2 * wave) * m01, 0, 6.283); ctx.fill();
+    ctx.globalAlpha = (0.2 + 0.4 * tw) * (1 - m01) + (0.5 + 0.5 * wave) * m01;
+    ctx.beginPath(); ctx.arc(x, y, (0.9 + 1 * tw) * (1 - m01) + (1.1 + 1.4 * wave) * m01, 0, 6.283); ctx.fill();
   }
   ctx.globalAlpha = 1;
-}
+};
 
 export const POINTS: Record<string, PointVariant['fn']> = {
+  textoAI: textoPuntos('AI'), textoPeople: textoPuntos('People'),
+  textoHuman: textoPuntos('Human'), textoDataAI: textoPuntos('Data & AI'),
   pondas, pcresta, premolino, montanas, olas, datos, adn,
   fusion, pcubo, enjambre, bandada, cardumen,
   ripples, corrientes, lluvia, vortices, supernova, girasol, cometas,
   orbital, panal, circuito, espectro, clustering,
-  marea, escaneo, warp, ecos, ascenso, palabraPuntos,
+  marea, escaneo, warp, ecos, ascenso,
 };
