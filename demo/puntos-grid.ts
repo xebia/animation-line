@@ -6,14 +6,14 @@ import type { PBg } from './points';
 const LABELS: Record<string, string> = {
   pondas: 'Flujo de datos', pcresta: 'Pico de carga', premolino: 'Turbulencia',
   montanas: 'Series temporales', olas: 'Streaming', datos: 'Métricas vivas',
-  adn: 'ADN del dato', tunel: 'Pipeline', morph: 'Transformación',
-  constelacion: 'Grafo de conocimiento', vortice: 'Ingesta', neural: 'Red neuronal',
-  fusion: 'Integración', ptoro: 'Ciclo del dato', pcubo: 'Cubo de datos',
-  esfera: 'Núcleo', helice: 'Cadena de datos', poliedro: 'Topología',
-  galaxia: 'Ecosistema', enjambre: 'Enjambre de agentes', atractor: 'Modelo caótico',
+  adn: 'ADN del dato', morph: 'Transformación',
+  fusion: 'Integración', pcubo: 'Cubo de datos',
+  galaxia: 'Ecosistema', enjambre: 'Enjambre de agentes',
   ripples: 'Propagación', corrientes: 'Corrientes de datos', lluvia: 'Lluvia digital',
   vortices: 'Campos de fuerza', supernova: 'Explosión de datos', tornado: 'Vórtice de cómputo',
   girasol: 'Crecimiento orgánico', cometas: 'Señales entrantes',
+  radar: 'Radar de eventos', orbital: 'Átomo de datos', panal: 'Celdas de datos',
+  circuito: 'Circuito', capas: 'Capas del modelo',
 };
 
 let PAL = PALETTES[1];

@@ -47,61 +47,10 @@ function pondas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, 
 function montanas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.82, rx = 0.6, gx = 120, gz = 52; for (let j = gz - 1; j >= 0; j--) { const z = (j / (gz - 1) - 0.5) * 3.6; for (let i = 0; i < gx; i++) { const un = i / (gx - 1), x = (un - 0.5) * 4.4; const ridge = Math.abs(Math.sin(x * 1 + 0.4 * Math.sin(z * 0.8))); const y = 0.7 * ridge - 0.15 + 0.18 * Math.sin(x * 0.5 + z * 0.7 - t * 0.0006); const p = P3(x, y, z, 0, rx, S, W, H); ctx.fillStyle = col(un); ctx.globalAlpha = 0.2 + 0.65 * p.sc; ctx.beginPath(); ctx.arc(p.X, p.Y, 0.9 * p.sc + 0.4, 0, 6.283); ctx.fill(); } } ctx.globalAlpha = 1; }
 function olas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.8, rx = 0.58, gx = 120, gz = 54; for (let j = gz - 1; j >= 0; j--) { const z = (j / (gz - 1) - 0.5) * 3.6; for (let i = 0; i < gx; i++) { const un = i / (gx - 1), x = (un - 0.5) * 4.4; const y = 0.3 * Math.sin(x * 1.3 - t * 0.0009) + 0.22 * Math.sin(z * 1.5 - t * 0.0007) + 0.13 * Math.sin((x + z) * 2 - t * 0.0005); const p = P3(x, y, z, 0, rx, S, W, H); ctx.fillStyle = col(un); ctx.globalAlpha = 0.2 + 0.65 * p.sc; ctx.beginPath(); ctx.arc(p.X, p.Y, 0.9 * p.sc + 0.4, 0, 6.283); ctx.fill(); } } ctx.globalAlpha = 1; }
 function datos(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const gx = 46, gy = 30; for (let i = 0; i < gx; i++) for (let j = 0; j < gy; j++) { const x = (i + 0.5) / gx * W, y = (j + 0.5) / gy * H; let v = 0.5 + 0.5 * Math.sin(i * 0.55 - t * 0.0012) * Math.cos(j * 0.7 + t * 0.0009); v = Math.pow(Math.max(0, v), 2); ctx.fillStyle = col(v); ctx.globalAlpha = 0.3 + 0.6 * v; ctx.beginPath(); ctx.arc(x, y, 1 + v * 5.5, 0, 6.283); ctx.fill(); } ctx.globalAlpha = 1; }
-function neural(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const layers = [5, 8, 8, 5, 3], pad = 0.12;
-  const cols: { x: number; y: number; act: number }[][] = [];
-  layers.forEach((cnt, l) => { const x = W * (pad + (1 - 2 * pad) * l / (layers.length - 1)); const arr: { x: number; y: number; act: number }[] = []; for (let n = 0; n < cnt; n++) { const y = H * 0.5 + (n - (cnt - 1) / 2) * Math.min(H * 0.13, H * 0.8 / cnt); arr.push({ x, y, act: 0.4 + 0.6 * Math.abs(Math.sin(t * 0.0016 + l * 0.7 + n * 1.1)) }); } cols.push(arr); });
-  for (let l = 0; l < cols.length - 1; l++) for (const a of cols[l]) for (const b of cols[l + 1]) { const lit = (a.act + b.act) / 2; ctx.strokeStyle = col(0.35 + 0.4 * lit); ctx.globalAlpha = 0.05 + 0.18 * lit; ctx.lineWidth = 0.5 + lit; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
-  ctx.globalAlpha = 1;
-  for (let l = 0; l < cols.length - 1; l++) { const A = cols[l], B = cols[l + 1]; for (let k = 0; k < A.length * 2; k++) { const a = A[k % A.length], b = B[(k * 3) % B.length], tp = (t * 0.0007 + k * 0.13 + l * 0.25) % 1; ctx.fillStyle = col(0.7); ctx.globalAlpha = 0.55; ctx.beginPath(); ctx.arc(a.x + (b.x - a.x) * tp, a.y + (b.y - a.y) * tp, 1.6, 0, 6.283); ctx.fill(); } }
-  ctx.globalAlpha = 1;
-  for (const arr of cols) for (const nd of arr) { ctx.fillStyle = col(nd.act); ctx.globalAlpha = 0.5 + 0.5 * nd.act; ctx.beginPath(); ctx.arc(nd.x, nd.y, 3 + nd.act * 5, 0, 6.283); ctx.fill(); if (nd.act > 0.85) { ctx.strokeStyle = col(0.8); ctx.globalAlpha = 0.5; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(nd.x, nd.y, 3 + nd.act * 5 + 4, 0, 6.283); ctx.stroke(); } } ctx.globalAlpha = 1;
-}
 function fusion(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.32, ry = t * 0.0003, rx = 0.5, sep = Math.sin(t * 0.0005) * 0.75; [-1, 1].forEach((side, ci) => { SPH.forEach((p) => { const pr = P3(p.x * 0.72 + side * sep, p.y * 0.72, p.z * 0.72, ry, rx, S, W, H); ctx.fillStyle = col(ci ? (p.y + 1) / 2 : 1 - (p.y + 1) / 2); ctx.globalAlpha = 0.25 + 0.6 * pr.sc; ctx.beginPath(); ctx.arc(pr.X, pr.Y, 1.2 * pr.sc + 0.5, 0, 6.283); ctx.fill(); }); }); ctx.globalAlpha = 1; }
-function esfera(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.36, ry = t * 0.00025, rx = 0.5; SPH.forEach((p) => { const rr = 0.85 + 0.15 * Math.sin(p.y * 5 - t * 0.0012); const pr = P3(p.x * rr, p.y * rr, p.z * rr, ry, rx, S, W, H); ctx.fillStyle = col((p.y + 1) / 2); ctx.globalAlpha = 0.35 + 0.55 * pr.sc; ctx.beginPath(); ctx.arc(pr.X, pr.Y, 1.3 * pr.sc + 0.5, 0, 6.283); ctx.fill(); }); ctx.globalAlpha = 1; }
-
 function pcresta(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.82, rx = 0.7, gx = 124, gz = 60, xc = Math.sin(t * 0.0004) * 1.4; for (let j = gz - 1; j >= 0; j--) { const z = (j / (gz - 1) - 0.5) * 3.6; for (let i = 0; i < gx; i++) { const un = i / (gx - 1), x = (un - 0.5) * 4.4; const y = 0.95 * Math.exp(-Math.pow(x - xc, 2) * 1.5) + 0.16 * Math.sin(z * 3 - t * 0.001) + 0.1 * Math.sin(x * 4 - t * 0.0006); const p = P3(x, y, z, 0, rx, S, W, H); ctx.fillStyle = col(un); ctx.globalAlpha = 0.2 + 0.65 * p.sc; ctx.beginPath(); ctx.arc(p.X, p.Y, 0.9 * p.sc + 0.4, 0, 6.283); ctx.fill(); } } ctx.globalAlpha = 1; }
 function premolino(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.8, rx = 0.65, gx = 112, gz = 60, cxw = Math.sin(t * 0.0003) * 1.0, czw = Math.cos(t * 0.00025) * 0.9; for (let j = gz - 1; j >= 0; j--) { const z = (j / (gz - 1) - 0.5) * 3.6; for (let i = 0; i < gx; i++) { const un = i / (gx - 1), x = (un - 0.5) * 4.4; const dx = x - cxw, dz = z - czw, d = Math.hypot(dx, dz), ang = Math.atan2(dz, dx) + (1.4 / (d + 0.4)) * Math.sin(t * 0.0006); const y = 0.4 * Math.sin(d * 3 - t * 0.001) + 0.2; const p = P3(cxw + Math.cos(ang) * d, y, czw + Math.sin(ang) * d, 0, rx, S, W, H); ctx.fillStyle = col(un); ctx.globalAlpha = 0.2 + 0.65 * p.sc; ctx.beginPath(); ctx.arc(p.X, p.Y, 0.9 * p.sc + 0.4, 0, 6.283); ctx.fill(); } } ctx.globalAlpha = 1; }
-function ptoro(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.34, ry = t * 0.0004, rx = 0.6 + 0.1 * Math.sin(t * 0.0003), R = 0.6, r = 0.28, nu = 46, nv = 18; for (let i = 0; i < nu; i++) for (let j = 0; j < nv; j++) { const u = i / nu * 6.283, v = j / nv * 6.283; const r2 = r * (0.5 + 0.5 * Math.abs(Math.sin(u * 3 - t * 0.001))); const x = (R + r2 * Math.cos(v)) * Math.cos(u), y = r2 * Math.sin(v), z = (R + r2 * Math.cos(v)) * Math.sin(u); const p = P3(x, y, z, ry, rx, S, W, H); ctx.fillStyle = col((Math.cos(u) + 1) / 2); ctx.globalAlpha = 0.22 + 0.6 * p.sc; ctx.beginPath(); ctx.arc(p.X, p.Y, 1.1 * p.sc + 0.4, 0, 6.283); ctx.fill(); } ctx.globalAlpha = 1; }
 function pcubo(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.3, ry = t * 0.0004, rx = 0.5 + 0.2 * Math.sin(t * 0.0003), n = 8, g = (a: number) => -1 + 2 * a / (n - 1), breathe = 1 + 0.18 * Math.sin(t * 0.0009), tw = 1.3 * Math.sin(t * 0.0005); for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) for (let k = 0; k < n; k++) { const x = g(i) * breathe, y = g(j) * breathe, z = g(k) * breathe, ang = y * tw, xr = x * Math.cos(ang) - z * Math.sin(ang), zr = x * Math.sin(ang) + z * Math.cos(ang); const p = P3(xr, y, zr, ry, rx, S, W, H); ctx.fillStyle = col((g(j) + 1) / 2); ctx.globalAlpha = 0.18 + 0.6 * p.sc; ctx.beginPath(); ctx.arc(p.X, p.Y, 1.1 * p.sc + 0.4, 0, 6.283); ctx.fill(); } ctx.globalAlpha = 1; }
-
-// Doble hélice 3D que gira y respira (estilo data/ADN)
-function helice(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.42, ry = t * 0.0004, rx = 0.5, N = 150, spin = t * 0.0007;
-  for (let i = N - 1; i >= 0; i--) {
-    const f = i / (N - 1), yy = (f - 0.5) * 2.4, rad = 0.72 + 0.13 * Math.sin(f * 6 + t * 0.0009);
-    [0, Math.PI].forEach((off, ci) => {
-      const ph = f * 6.283 * 2.3 + off + spin, x = Math.cos(ph) * rad, z = Math.sin(ph) * rad;
-      const p = P3(x, yy, z, ry, rx, S, W, H);
-      ctx.fillStyle = col(ci ? f : 1 - f); ctx.globalAlpha = 0.25 + 0.6 * p.sc;
-      ctx.beginPath(); ctx.arc(p.X, p.Y, 1.3 * p.sc + 0.4, 0, 6.283); ctx.fill();
-    });
-    if (i % 9 === 0) { // travesaños ocasionales entre las dos hebras
-      const ph = f * 6.283 * 2.3 + spin;
-      for (let k = 0; k <= 6; k++) { const tt = k / 6, ang = ph + Math.PI * tt, x = Math.cos(ang) * rad, z = Math.sin(ang) * rad; const p = P3(x, yy, z, ry, rx, S, W, H); ctx.fillStyle = col(0.5); ctx.globalAlpha = 0.12 + 0.4 * p.sc; ctx.beginPath(); ctx.arc(p.X, p.Y, 0.8 * p.sc + 0.3, 0, 6.283); ctx.fill(); }
-    }
-  }
-  ctx.globalAlpha = 1;
-}
-
-// Icosaedro (12 vértices, 30 aristas) — base geométrica
-const ICO = (() => {
-  const p = (1 + Math.sqrt(5)) / 2, s = 1 / Math.sqrt(1 + p * p);
-  const verts = [[0, 1, p], [0, 1, -p], [0, -1, p], [0, -1, -p], [1, p, 0], [1, -p, 0], [-1, p, 0], [-1, -p, 0], [p, 0, 1], [p, 0, -1], [-p, 0, 1], [-p, 0, -1]].map((a) => [a[0] * s, a[1] * s, a[2] * s]);
-  const edges: [number, number][] = [];
-  for (let i = 0; i < verts.length; i++) for (let j = i + 1; j < verts.length; j++) { const dx = verts[i][0] - verts[j][0], dy = verts[i][1] - verts[j][1], dz = verts[i][2] - verts[j][2]; if (Math.abs(dx * dx + dy * dy + dz * dz - 4 * s * s) < 0.05) edges.push([i, j]); }
-  return { verts, edges };
-})();
-// Icosaedro de puntos que rota y respira (forma geométrica)
-function poliedro(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.42, ry = t * 0.0004, rx = 0.45 + 0.15 * Math.sin(t * 0.0003), breathe = 1 + 0.06 * Math.sin(t * 0.0011);
-  ICO.edges.forEach((e) => {
-    const a = ICO.verts[e[0]], b = ICO.verts[e[1]], N = 11;
-    for (let k = 0; k <= N; k++) { const f = k / N, x = (a[0] + (b[0] - a[0]) * f) * breathe, y = (a[1] + (b[1] - a[1]) * f) * breathe, z = (a[2] + (b[2] - a[2]) * f) * breathe; const pr = P3(x, y, z, ry, rx, S, W, H); ctx.fillStyle = col((y + 1) / 2); ctx.globalAlpha = 0.22 + 0.55 * pr.sc; ctx.beginPath(); ctx.arc(pr.X, pr.Y, 1 * pr.sc + 0.35, 0, 6.283); ctx.fill(); }
-  });
-  ICO.verts.forEach((a) => { const pr = P3(a[0] * breathe, a[1] * breathe, a[2] * breathe, ry, rx, S, W, H); ctx.fillStyle = col((a[1] + 1) / 2); ctx.globalAlpha = 0.4 + 0.6 * pr.sc; ctx.beginPath(); ctx.arc(pr.X, pr.Y, 2.2 * pr.sc + 0.6, 0, 6.283); ctx.fill(); });
-  ctx.globalAlpha = 1;
-}
 
 // Galaxia espiral con rotación diferencial: el núcleo gira más rápido que los brazos
 function galaxia(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
@@ -139,33 +88,6 @@ function enjambre(ctx: CanvasRenderingContext2D, W: number, H: number, t: number
   }
   ctx.globalAlpha = 1;
 }
-// Atractor de Lorenz: trayectoria caótica rotando, con un cometa que la recorre
-const LORENZ: { x: number; y: number; z: number }[] = (() => {
-  const pts: { x: number; y: number; z: number }[] = [];
-  let x = 0.1, y = 0, z = 0;
-  const dt = 0.007, sig = 10, rho = 28, beta = 8 / 3;
-  for (let i = 0; i < 2400; i++) {
-    const dx = sig * (y - x), dy = x * (rho - z) - y, dz = x * y - beta * z;
-    x += dx * dt; y += dy * dt; z += dz * dt;
-    if (i > 300) pts.push({ x: x / 24, y: (z - 25) / 24, z: y / 24 }); // normalizado, sin el transitorio
-  }
-  return pts;
-})();
-function atractor(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.42, ry = t * 0.0003, rx = 0.35 + 0.12 * Math.sin(t * 0.0002);
-  const M = LORENZ.length, head = (t * 0.35) % M;
-  for (let i = 0; i < M; i += 2) {
-    const p = LORENZ[i];
-    const pr = P3(p.x, p.y, p.z, ry, rx, S, W, H);
-    // el cometa: los puntos recién recorridos brillan y se van apagando
-    let trail = (head - i + M) % M; trail = Math.max(0, 1 - trail / 260);
-    ctx.fillStyle = col(0.25 + 0.5 * (p.y + 1) / 2 + 0.25 * trail);
-    ctx.globalAlpha = (0.14 + 0.4 * pr.sc) + 0.5 * trail;
-    ctx.beginPath(); ctx.arc(pr.X, pr.Y, (0.8 + 1.8 * trail) * pr.sc + 0.3, 0, 6.283); ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
-
 // ——— Campos que llenan todo el cuadro (sin figura central) ———
 
 // Interferencia: ondas circulares de 2 focos que se cruzan por todo el lienzo
@@ -344,16 +266,6 @@ function adn(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col
   }
   ctx.globalAlpha = 1;
 }
-// Túnel: anillos de puntos que fluyen hacia la cámara y te envuelven
-function tunel(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.5, rings = 44, per = 46, r = 0.78;
-  for (let j = 0; j < rings; j++) {
-    let zc = (j / rings) * 4 - (t * 0.0006) % 4; zc = ((zc % 4) + 4) % 4 - 2;
-    const wob = 0.16 * Math.sin(zc * 2 + t * 0.0008);
-    for (let i = 0; i < per; i++) { const a = i / per * 6.283, rr = r + wob, pr = P3(rr * Math.cos(a), rr * Math.sin(a), zc, 0, 0.18, S, W, H); if (pr.sc <= 0) continue; ctx.fillStyle = col(a / 6.283); ctx.globalAlpha = Math.max(0, 0.12 + 0.72 * pr.sc); ctx.beginPath(); ctx.arc(pr.X, pr.Y, 1.1 * pr.sc + 0.3, 0, 6.283); ctx.fill(); }
-  }
-  ctx.globalAlpha = 1;
-}
 // Morph: la nube transiciona fluyendo entre esfera y toro
 function morph(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
   const S = Math.min(W, H) * 0.36, ry = t * 0.0004, rx = 0.5, m = 0.5 + 0.5 * Math.sin(t * 0.0004);
@@ -366,23 +278,166 @@ function morph(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, c
   }
   ctx.globalAlpha = 1;
 }
-// Constelación: nodos que derivan conectados por cercanía
-const STARS: { x: number; y: number; px: number; py: number }[] = (() => { let sd = 9; const r = () => { sd = (sd * 9301 + 49297) % 233280; return sd / 233280; }; const a: { x: number; y: number; px: number; py: number }[] = []; for (let i = 0; i < 70; i++) a.push({ x: r(), y: r(), px: r() * 6.283, py: r() * 6.283 }); return a; })();
-function constelacion(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const pts = STARS.map((n) => ({ x: (0.05 + n.x * 0.9) * W + Math.sin(t * 0.0003 + n.px) * 16, y: (0.08 + n.y * 0.84) * H + Math.cos(t * 0.00026 + n.py) * 16 }));
-  for (let i = 0; i < pts.length; i++) for (let k = i + 1; k < pts.length; k++) { const dx = pts[i].x - pts[k].x, dy = pts[i].y - pts[k].y, d = Math.hypot(dx, dy); if (d < W * 0.12) { ctx.strokeStyle = col(i / pts.length); ctx.globalAlpha = 0.18 * (1 - d / (W * 0.12)); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[k].x, pts[k].y); ctx.stroke(); } }
+// ——— Formas geométricas nuevas (tecnología / datos) ———
+
+// Radar de eventos: barrido circular que ilumina blips al pasar, con anillos guía
+function radar(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2;
+  const beam = t * 0.0011;
+  // anillos guía concéntricos
+  for (let r = 1; r <= 4; r++) {
+    const rad = R * r / 4, per = 30 + r * 18;
+    for (let i = 0; i < per; i++) {
+      const a = (i / per) * 6.283;
+      ctx.fillStyle = col(0.35); ctx.globalAlpha = 0.3;
+      ctx.beginPath(); ctx.arc(cx + rad * Math.cos(a), cy + rad * Math.sin(a), 1.1, 0, 6.283); ctx.fill();
+    }
+  }
+  // estela del haz: abanico que se apaga tras el barrido
+  for (let w = 0; w < 14; w++) {
+    const a = beam - w * 0.055, fadeW = 1 - w / 14;
+    for (let k = 0; k < 22; k++) {
+      const f = (k + 1) / 22;
+      ctx.fillStyle = col(0.8); ctx.globalAlpha = 0.55 * fadeW * fadeW * (1 - f * 0.4);
+      ctx.beginPath(); ctx.arc(cx + R * f * Math.cos(a), cy + R * f * Math.sin(a), 1.7 * fadeW + 0.4, 0, 6.283); ctx.fill();
+    }
+  }
+  // blips deterministas que se encienden al pasar el haz y se apagan despacio
+  for (let b = 0; b < 64; b++) {
+    const rad = R * (0.15 + 0.85 * ((b * 0.618) % 1)); // radios repartidos (áureo)
+    const ang = b * 2.399963;
+    const d = ((beam - ang) % 6.283 + 6.283) % 6.283;
+    const glow = Math.exp(-d * 1.1);
+    ctx.fillStyle = col(0.35 + 0.6 * glow); ctx.globalAlpha = 0.22 + 0.75 * glow;
+    ctx.beginPath(); ctx.arc(cx + rad * Math.cos(ang), cy + rad * Math.sin(ang), 1.5 + 3 * glow, 0, 6.283); ctx.fill();
+  }
   ctx.globalAlpha = 1;
-  pts.forEach((p, i) => { ctx.fillStyle = col(i / pts.length); ctx.beginPath(); ctx.arc(p.x, p.y, 2.1, 0, 6.283); ctx.fill(); });
 }
-// Vórtice: remolino 3D de puntos en espiral descendente
-function vortice(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.42, ry = t * 0.0004, rx = 0.95, N = 560, turns = 4;
-  for (let i = 0; i < N; i++) { const u = i / N, th = u * turns * 6.283 + t * 0.0008, rad = 0.85 * (1 - u) + 0.04, y = -0.9 + u * 1.8; const pr = P3(rad * Math.cos(th), y, rad * Math.sin(th), ry, rx, S, W, H); ctx.fillStyle = col(u); ctx.globalAlpha = 0.25 + 0.6 * pr.sc; ctx.beginPath(); ctx.arc(pr.X, pr.Y, 1.2 * pr.sc + 0.4, 0, 6.283); ctx.fill(); }
+// Átomo de datos: núcleo + tres órbitas inclinadas 60° con electrones brillantes
+function orbital(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const S = Math.min(W, H) * 0.44, ry = t * 0.00025, rx = 0.35, incl = 1.15, per = 70;
+  for (let o = 0; o < 3; o++) {
+    const tilt = o * Math.PI / 3;
+    const ct = Math.cos(tilt), st = Math.sin(tilt), ci = Math.cos(incl), si = Math.sin(incl);
+    const orb = (a: number) => {
+      // círculo en xz → inclinación fija → giro de la órbita
+      const x0 = Math.cos(a), y0 = Math.sin(a) * si, z0 = Math.sin(a) * ci;
+      return { x: x0 * ct - z0 * st, y: y0, z: x0 * st + z0 * ct };
+    };
+    for (let i = 0; i < per; i++) {
+      const p = orb((i / per) * 6.283);
+      const pr = P3(p.x, p.y, p.z, ry, rx, S, W, H);
+      ctx.fillStyle = col(o / 2); ctx.globalAlpha = 0.16 + 0.4 * pr.sc;
+      ctx.beginPath(); ctx.arc(pr.X, pr.Y, 0.9 * pr.sc + 0.3, 0, 6.283); ctx.fill();
+    }
+    // electrón con estela
+    for (let k = 0; k < 9; k++) {
+      const p = orb(t * 0.0016 + o * 2.1 - k * 0.07);
+      const pr = P3(p.x, p.y, p.z, ry, rx, S, W, H);
+      const fade = 1 - k / 9;
+      ctx.fillStyle = col(0.75 + 0.25 * fade); ctx.globalAlpha = (0.15 + 0.7 * fade) * (0.4 + 0.6 * pr.sc);
+      ctx.beginPath(); ctx.arc(pr.X, pr.Y, (1 + 2.2 * fade) * pr.sc, 0, 6.283); ctx.fill();
+    }
+  }
+  // núcleo compacto
+  SPH.forEach((p, i) => {
+    if (i % 6 !== 0) return;
+    const pr = P3(p.x * 0.14, p.y * 0.14, p.z * 0.14, t * 0.0008, 0.4, S, W, H);
+    ctx.fillStyle = col(0.5); ctx.globalAlpha = 0.35 + 0.5 * pr.sc;
+    ctx.beginPath(); ctx.arc(pr.X, pr.Y, 1.6 * pr.sc, 0, 6.283); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+}
+// Celdas de datos: retícula hexagonal que pulsa en ondas concéntricas desde el centro
+function panal(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const step = Math.min(W, H) / 15, dy = step * 0.866;
+  const cx = W / 2, cy = H / 2, maxD = Math.hypot(cx, cy);
+  const rows = Math.ceil(H / dy) + 2, cols = Math.ceil(W / step) + 2;
+  for (let j = 0; j < rows; j++) {
+    for (let i = 0; i < cols; i++) {
+      const x = (i + (j % 2) * 0.5) * step, y = j * dy;
+      const d = Math.hypot(x - cx, y - cy) / maxD;
+      const w = 0.5 + 0.5 * Math.sin(d * 9 - t * 0.0016); // onda radial hacia fuera
+      ctx.fillStyle = col(0.2 + 0.6 * d + 0.2 * w);
+      ctx.globalAlpha = 0.14 + 0.62 * w * w;
+      ctx.beginPath(); ctx.arc(x, y, 1 + 3 * w * w, 0, 6.283); ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+// Circuito: retícula de pistas con señales recorriéndolas (bus de datos)
+function circuito(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const rows = 10, cols = 16, trail = 9;
+  const ry = (j: number) => H * (j + 0.5) / rows, rxp = (i: number) => W * (i + 0.5) / cols;
+  // pistas: puntos finos a lo largo de filas y columnas (la placa del circuito)
+  for (let j = 0; j < rows; j++) for (let k = 0; k < 90; k++) {
+    ctx.fillStyle = col(0.3); ctx.globalAlpha = 0.12;
+    ctx.beginPath(); ctx.arc((k + 0.5) / 90 * W, ry(j), 0.6, 0, 6.283); ctx.fill();
+  }
+  for (let i = 0; i < cols; i += 2) for (let k = 0; k < 60; k++) {
+    ctx.fillStyle = col(0.3); ctx.globalAlpha = 0.12;
+    ctx.beginPath(); ctx.arc(rxp(i), (k + 0.5) / 60 * H, 0.6, 0, 6.283); ctx.fill();
+  }
+  // nodos de la retícula (intersecciones)
+  for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
+    const pulse = 0.5 + 0.5 * Math.sin(i * 1.7 + j * 2.3 + t * 0.0012);
+    ctx.fillStyle = col(0.4); ctx.globalAlpha = 0.25 + 0.25 * pulse;
+    ctx.beginPath(); ctx.arc(rxp(i), ry(j), 1.4 + 0.8 * pulse, 0, 6.283); ctx.fill();
+  }
+  // señales horizontales: una por fila, con estela
+  for (let j = 0; j < rows; j++) {
+    const sp = 0.05 + 0.07 * (0.5 + 0.5 * Math.sin(j * 5.7)), dir = j % 2 === 0 ? 1 : -1;
+    const fh = ((t * sp * 0.001 + j * 0.37) % 1 + 1) % 1;
+    const xh = (dir > 0 ? fh : 1 - fh) * W;
+    for (let k = 0; k < trail; k++) {
+      const x = xh - dir * k * 9, fade = 1 - k / trail;
+      if (x < 0 || x > W) continue;
+      ctx.fillStyle = col(0.5 + 0.4 * fade); ctx.globalAlpha = (0.1 + 0.6 * fade * fade) + (k === 0 ? 0.25 : 0);
+      ctx.beginPath(); ctx.arc(x, ry(j), 1 + 1.6 * fade, 0, 6.283); ctx.fill();
+    }
+  }
+  // señales verticales: una por columna alterna
+  for (let i = 0; i < cols; i += 2) {
+    const sp = 0.04 + 0.06 * (0.5 + 0.5 * Math.sin(i * 3.3)), dir = i % 4 === 0 ? 1 : -1;
+    const fv = ((t * sp * 0.001 + i * 0.23) % 1 + 1) % 1;
+    const yh = (dir > 0 ? fv : 1 - fv) * H;
+    for (let k = 0; k < trail; k++) {
+      const y = yh - dir * k * 9, fade = 1 - k / trail;
+      if (y < 0 || y > H) continue;
+      ctx.fillStyle = col(0.25 + 0.4 * fade); ctx.globalAlpha = (0.1 + 0.6 * fade * fade) + (k === 0 ? 0.25 : 0);
+      ctx.beginPath(); ctx.arc(rxp(i), y, 1 + 1.6 * fade, 0, 6.283); ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+// Capas del modelo: tres esferas concéntricas de anillos de latitud, contrarrotando
+function capas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const S = Math.min(W, H) * 0.4, rx = 0.42;
+  const shells = [
+    { r: 0.4, dir: 1, tone: 0.85, lats: 6, per: 22 },
+    { r: 0.7, dir: -1, tone: 0.5, lats: 9, per: 30 },
+    { r: 1.0, dir: 1, tone: 0.15, lats: 12, per: 40 },
+  ];
+  shells.forEach((sh, si) => {
+    const ry = sh.dir * t * (0.00025 + si * 0.00008) + si;
+    for (let la = 0; la < sh.lats; la++) {
+      const th = ((la + 0.5) / sh.lats - 0.5) * Math.PI; // latitud
+      const y = Math.sin(th) * sh.r, rr = Math.cos(th) * sh.r;
+      for (let i = 0; i < sh.per; i++) {
+        const a = (i / sh.per) * 6.283;
+        const pr = P3(rr * Math.cos(a), y, rr * Math.sin(a), ry, rx, S, W, H);
+        ctx.fillStyle = col(sh.tone + 0.12 * (Math.sin(th) + 1) / 2);
+        ctx.globalAlpha = 0.16 + 0.6 * pr.sc;
+        ctx.beginPath(); ctx.arc(pr.X, pr.Y, (0.7 + 0.4 * si) * pr.sc + 0.4, 0, 6.283); ctx.fill();
+      }
+    }
+  });
   ctx.globalAlpha = 1;
 }
 
 export const POINTS: Record<string, PointVariant['fn']> = {
-  pondas, pcresta, premolino, montanas, olas, datos, neural, adn, tunel, morph, constelacion, vortice,
-  fusion, ptoro, pcubo, esfera, helice, poliedro, galaxia, enjambre, atractor,
+  pondas, pcresta, premolino, montanas, olas, datos, adn, morph,
+  fusion, pcubo, galaxia, enjambre,
   ripples, corrientes, lluvia, vortices, supernova, tornado, girasol, cometas,
+  radar, orbital, panal, circuito, capas,
 };
