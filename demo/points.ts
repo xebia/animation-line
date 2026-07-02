@@ -575,53 +575,55 @@ export function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: numbe
     }
     segsCache.set(key, segs);
   }
-  // ciclo: abstracto -> palabra -> se deshace
+  // ciclo: figura geometrica -> palabra -> se deshace
   const raw = 0.5 + 0.5 * Math.sin(t * 0.00028);
   const form = raw * raw * (3 - 2 * raw);
   ctx.lineCap = 'round';
   ctx.lineWidth = H * 0.0035;
   const P = 14;
-  for (let sI = 0; sI < segs.length; sI++) {
+  const total = segs.length;
+  for (let sI = 0; sI < total; sI++) {
     const sg = segs[sI];
     const L = sg.x1 - sg.x0;
-    const ph = sI * 2.399963;
-    let cx: number, cy: number, dx: number, dy: number, curve: number;
-    if (mode === 'oleaje') {
-      // trazos flotando como olas sueltas por todo el cuadro
-      cx = W * (0.5 + 0.42 * Math.sin(ph)) + W * 0.05 * Math.sin(t * 0.0005 + ph);
-      cy = H * (0.5 + 0.4 * Math.sin(ph * 2.1)) + H * 0.05 * Math.sin(t * 0.0007 + ph * 1.3);
-      const ang = 0.5 * Math.sin(ph * 3 + t * 0.0004);
-      dx = Math.cos(ang); dy = Math.sin(ang);
-      curve = H * 0.05;
-    } else if (mode === 'remolino') {
-      // trazos orbitando en un remolino que colapsa en la palabra
-      const rad = Math.min(W, H) * (0.16 + 0.36 * ((sI * 0.618) % 1));
-      const a = ph + t * (sI % 2 ? 0.0006 : -0.0005);
-      cx = W / 2 + rad * 1.5 * Math.cos(a); cy = H / 2 + rad * Math.sin(a);
-      dx = -Math.sin(a); dy = Math.cos(a);
-      curve = H * 0.025;
-    } else if (mode === 'latido') {
-      // radios que laten alrededor del centro y colapsan
-      const rad = Math.min(W, H) * (0.1 + 0.4 * ((sI * 0.382) % 1)) * (1 + 0.18 * Math.sin(t * 0.002 + ph));
-      cx = W / 2 + rad * 1.6 * Math.cos(ph); cy = H / 2 + rad * Math.sin(ph);
-      dx = Math.cos(ph); dy = Math.sin(ph);
-      curve = H * 0.018;
-    } else {
-      // barras digitales saltando a posiciones aleatorias (glitch) que encajan en el texto
-      const tq = Math.floor(t * 0.0025);
-      cx = W * (0.08 + 0.84 * hash01(tq * 3.1 + ph));
-      cy = H * (0.06 + 0.88 * hash01(tq * 1.7 + ph * 2.3));
-      dx = 1; dy = 0; curve = 0;
-    }
+    const ph = (sI * 0.618) % 1;
     ctx.strokeStyle = col(sg.v);
-    ctx.globalAlpha = 0.5 + 0.5 * form;
+    ctx.globalAlpha = 0.55 + 0.45 * form;
     ctx.beginPath();
     for (let k = 0; k <= P; k++) {
       const u = k / P;
-      const ax = cx + dx * (u - 0.5) * L;
-      const ay = cy + dy * (u - 0.5) * L + curve * Math.sin(u * 6.283 + t * 0.002 + ph);
       const fx = sg.x0 + u * L;
       const fy = sg.y + H * 0.0022 * Math.sin(fx * 0.02 + sg.v * 6 + t * 0.001);
+      let ax: number, ay: number;
+      if (mode === 'oleaje') {
+        // campo de ondas limpias: mismos trazos repartidos en filas que ondulan
+        const row = sI % 9;
+        ax = fx;
+        ay = H * (0.1 + 0.8 * row / 8)
+          + H * 0.08 * Math.sin(fx * 0.0045 + row * 0.9 - t * 0.0009)
+          + H * 0.025 * Math.sin(fx * 0.012 + t * 0.0006);
+      } else if (mode === 'remolino') {
+        // anillos concentricos discontinuos girando (los trazos son los "dientes")
+        const r = sI % 6;
+        const RAD = Math.min(W, H) * (0.13 + 0.1 * r);
+        const dir = r % 2 === 0 ? 1 : -1;
+        const a = ph * 6.283 + dir * t * 0.0005 + (u - 0.5) * (L / RAD);
+        ax = W / 2 + RAD * 1.5 * Math.cos(a);
+        ay = H / 2 + RAD * Math.sin(a);
+      } else if (mode === 'latido') {
+        // sol de radios equiespaciados que respira
+        const a = (sI / total) * 6.283 + t * 0.00025;
+        const inner = Math.min(W, H) * (0.1 + 0.34 * ph) * (1 + 0.14 * Math.sin(t * 0.0016));
+        const rad = inner + u * L * 0.7;
+        ax = W / 2 + rad * 1.5 * Math.cos(a);
+        ay = H / 2 + rad * Math.sin(a);
+      } else {
+        // reticula digital: guiones ordenados en una malla que saltan de celda (glitch)
+        const tq = Math.floor(t * 0.0025);
+        const gr = Math.floor(hash01(tq * 1.7 + ph * 13.7) * 12);
+        const gc = hash01(tq * 3.1 + ph * 7.9);
+        ax = W * 0.06 + gc * W * 0.78 + u * L * 0.85;
+        ay = H * (0.08 + 0.84 * gr / 11);
+      }
       const x = ax + (fx - ax) * form, y = ay + (fy - ay) * form;
       if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
