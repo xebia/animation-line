@@ -551,7 +551,7 @@ const inMask = (m: ImageData, x: number, y: number) =>
 
 // Palabra en lineas: franjas horizontales onduladas recortadas por el texto (estilo "People")
 let wordBuf: HTMLCanvasElement | null = null;
-function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+export function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
   const word = 'Xebia', SS = 2; // supersampling para nitidez en pantallas retina
   if (!wordBuf) wordBuf = document.createElement('canvas');
   const bw = Math.round(W * SS), bh = Math.round(H * SS);
@@ -559,13 +559,13 @@ function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: number, t: n
   const c = wordBuf.getContext('2d')!;
   c.setTransform(SS, 0, 0, SS, 0, 0);
   c.clearRect(0, 0, W, H);
-  const n = 30;
+  const n = 46;
   c.lineCap = 'round';
   for (let i = 0; i < n; i++) {
     const v = i / (n - 1);
     const y0 = H * (0.5 + (v - 0.5) * 0.66);
     c.strokeStyle = col(v);
-    c.lineWidth = H * 0.011;
+    c.lineWidth = H * 0.0055;
     c.beginPath();
     for (let x = 0; x <= W; x += W / 110) {
       const y = y0 + H * 0.014 * Math.sin(x * 0.016 + v * 8 - t * 0.0012)
@@ -625,5 +625,5 @@ export const POINTS: Record<string, PointVariant['fn']> = {
   fusion, pcubo, enjambre, bandada, cardumen,
   ripples, corrientes, lluvia, vortices, supernova, girasol, cometas,
   orbital, panal, circuito, espectro, clustering,
-  marea, escaneo, warp, ecos, ascenso, palabraLineas, palabraPuntos,
+  marea, escaneo, warp, ecos, ascenso, palabraPuntos,
 };

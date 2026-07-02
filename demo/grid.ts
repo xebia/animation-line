@@ -1,5 +1,6 @@
 import { LineField, VARIANT_NAMES } from '../src/index';
 import type { Background, LineFieldOptions } from '../src/index';
+import { palabraLineas, paintBg, makeCol, BACKGROUNDS as PBGS } from './points';
 
 // Mismo orden de paletas y fondos que en /puntos
 const PALETTES = [
@@ -54,6 +55,41 @@ VARIANT_NAMES.forEach((name) => {
   io.observe(stage);
 });
 
+// Card extra: palabra "Xebia" formada por líneas finas onduladas (Canvas 2D)
+let bgIdx = 1;
+{
+  const card = document.createElement('div');
+  card.className = 'card';
+  const cv = document.createElement('canvas');
+  cv.style.position = 'absolute'; cv.style.inset = '0'; cv.style.width = '100%'; cv.style.height = '100%';
+  const label = document.createElement('span');
+  label.className = 'label';
+  label.textContent = 'xebia · texto';
+  card.append(cv, label);
+  grid.appendChild(card);
+  const ctx = cv.getContext('2d')!;
+  const DPR = Math.min(devicePixelRatio || 1, 2);
+  let w = 1, h = 1, running = false, raf = 0;
+  const fit = (): void => {
+    const r = cv.getBoundingClientRect(); w = r.width; h = r.height;
+    cv.width = r.width * DPR; cv.height = r.height * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  };
+  const loop = (t: number): void => {
+    if (!running) return;
+    raf = requestAnimationFrame(loop);
+    paintBg(ctx, w, h, PBGS[bgIdx]);
+    palabraLineas(ctx, w, h, t * 0.55, makeCol(PAL));
+  };
+  const wio = new IntersectionObserver((es) => {
+    for (const e of es) {
+      if (e.isIntersecting && !running) { running = true; fit(); raf = requestAnimationFrame(loop); }
+      else if (!e.isIntersecting && running) { running = false; cancelAnimationFrame(raf); }
+    }
+  }, { rootMargin: '300px' });
+  wio.observe(cv);
+  addEventListener('resize', () => { if (running) fit(); });
+}
+
 function setPalette(p: string[]): void {
   PAL = p;
   slots.forEach((s) => { s.opts.palette = p; s.field?.setOptions({ palette: p }); });
@@ -77,6 +113,6 @@ BACKGROUNDS.forEach((b, idx) => {
   d.className = 'swat sq' + (idx === 1 ? ' active' : '');
   d.title = b.name;
   d.style.background = b.css;
-  d.onclick = () => { setBg(b.bg); [...bgEl.children].forEach((c) => c.classList.remove('active')); d.classList.add('active'); };
+  d.onclick = () => { setBg(b.bg); bgIdx = idx; [...bgEl.children].forEach((c) => c.classList.remove('active')); d.classList.add('active'); };
   bgEl.appendChild(d);
 });

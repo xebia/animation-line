@@ -18,7 +18,7 @@ const LABELS: Record<string, string> = {
   clustering: 'Clustering',
   marea: 'Marea de datos', escaneo: 'Escaneo', warp: 'Hipervelocidad',
   ecos: 'Ecos', ascenso: 'Ascenso',
-  palabraLineas: 'Xebia · texto en líneas', palabraPuntos: 'AI · texto en puntos',
+  palabraPuntos: 'AI · texto en puntos',
 };
 
 let PAL = PALETTES[1];
