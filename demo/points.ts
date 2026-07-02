@@ -549,83 +549,42 @@ function textMask(word: string, W: number, H: number): ImageData {
 const inMask = (m: ImageData, x: number, y: number) =>
   x >= 0 && y >= 0 && x < m.width && y < m.height && m.data[(((y | 0) * m.width) + (x | 0)) * 4 + 3] > 120;
 
-// Palabra en lineas: un campo de lineas continuas (estilo de las variantes) donde
-// la palabra emerge iluminandose: los tramos que cruzan las letras se encienden.
-const segsCache = new Map<string, { y: number; x0: number; x1: number; v: number }[]>();
-export type ModoLineas = 'oleaje' | 'remolino' | 'latido' | 'glitch';
-const N_ROWS = 66;
-export function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col, word = 'Xebia', mode: ModoLineas = 'oleaje') {
-  const key = word + '|' + (W | 0) + 'x' + (H | 0);
-  let segs = segsCache.get(key);
-  if (!segs) {
-    const mk = textMask(word, W | 0, H | 0);
-    segs = [];
-    for (let i = 0; i < N_ROWS; i++) {
-      const v = i / (N_ROWS - 1);
-      const y = H * (0.5 + (v - 0.5) * 0.7);
-      let run = -1;
-      for (let x = 0; x <= W; x += 2) {
-        const ins = inMask(mk, x, y);
-        if (ins && run < 0) run = x;
-        else if (!ins && run >= 0) { if (x - run > 4) segs.push({ y, x0: run, x1: x, v }); run = -1; }
-      }
-      if (run >= 0) segs.push({ y, x0: run, x1: W, v });
+// Palabra en lineas: franjas horizontales onduladas recortadas por el texto (estilo "People")
+let wordBuf: HTMLCanvasElement | null = null;
+export function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col, word = 'Xebia') {
+  const SS = 2; // supersampling para nitidez en pantallas retina
+  if (!wordBuf) wordBuf = document.createElement('canvas');
+  const bw = Math.round(W * SS), bh = Math.round(H * SS);
+  if (wordBuf.width !== bw || wordBuf.height !== bh) { wordBuf.width = bw; wordBuf.height = bh; }
+  const c = wordBuf.getContext('2d')!;
+  c.setTransform(SS, 0, 0, SS, 0, 0);
+  c.clearRect(0, 0, W, H);
+  const n = 58;
+  c.lineCap = 'round';
+  for (let i = 0; i < n; i++) {
+    const v = i / (n - 1);
+    const y0 = H * (0.5 + (v - 0.5) * 0.66);
+    c.strokeStyle = col(v);
+    c.lineWidth = H * 0.0032;
+    c.beginPath();
+    for (let x = 0; x <= W; x += W / 110) {
+      const y = y0 + H * 0.014 * Math.sin(x * 0.016 + v * 8 - t * 0.0012)
+        + H * 0.007 * Math.sin(x * 0.006 + t * 0.0007 + v * 3);
+      if (x === 0) c.moveTo(x, y); else c.lineTo(x, y);
     }
-    segsCache.set(key, segs);
+    c.stroke();
   }
-  // ciclo: campo geometrico puro -> la palabra se enciende dentro del campo -> se apaga
-  const raw = 0.5 + 0.5 * Math.sin(t * 0.00028);
-  const form = raw * raw * (3 - 2 * raw);
-  // la misma funcion de onda para el campo y para la palabra (la palabra VIVE en el campo);
-  // en fase libre el campo ondula mas; al formarse se calma
-  const amp1 = H * (0.006 + 0.05 * (1 - form)), amp2 = H * (0.004 + 0.02 * (1 - form));
-  const yAt = (v: number, y0: number, x: number): number => {
-    let y = y0 + amp1 * Math.sin(x * 0.006 + v * 7 - t * 0.0009)
-      + amp2 * Math.sin(x * 0.015 + t * 0.0006 + v * 3);
-    if (mode === 'latido') {
-      const px = (((t * 0.00038) % 1.25 + 1.25) % 1.25) * W * 1.2 - W * 0.1;
-      y += H * 0.045 * Math.exp(-Math.pow((x - px) / (W * 0.05), 2)) * Math.sin(x * 0.05 + v * 9 + t * 0.003);
-    } else if (mode === 'remolino') {
-      const d = Math.hypot(x - W / 2, y0 - H / 2);
-      y += H * 0.035 * (1 - form) * Math.sin(d * 0.02 - t * 0.0016);
-    } else if (mode === 'glitch') {
-      const tq = Math.floor(t * 0.0025);
-      const q = Math.sin(tq * 12.9898 + Math.floor(v * N_ROWS) * 78.233);
-      y += Math.abs(q) > 0.8 ? q * H * 0.012 * (1 - form * 0.7) : 0;
-    }
-    return y;
-  };
-  ctx.lineCap = 'round';
-  // paso 1: el campo — lineas continuas de lado a lado
-  ctx.lineWidth = 1.1;
-  for (let i = 0; i < N_ROWS; i++) {
-    const v = i / (N_ROWS - 1);
-    const y0 = H * (0.5 + (v - 0.5) * 0.7);
-    ctx.strokeStyle = col(v);
-    ctx.globalAlpha = 0.14 + 0.3 * (1 - form);
-    ctx.beginPath();
-    for (let x = 0; x <= W; x += W / 130) {
-      const y = yAt(v, y0, x);
-      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    }
-    ctx.stroke();
-  }
-  // paso 2: la palabra — los mismos tramos de linea, encendidos
-  if (form > 0.02) {
-    ctx.lineWidth = 1.3;
-    for (const sg of segs) {
-      ctx.strokeStyle = col(sg.v);
-      ctx.globalAlpha = form;
-      ctx.beginPath();
-      const step = (sg.x1 - sg.x0) / Math.max(4, Math.round((sg.x1 - sg.x0) / (W / 130)));
-      for (let x = sg.x0; x <= sg.x1 + 0.1; x += step) {
-        const y = yAt(sg.v, sg.y, x);
-        if (x === sg.x0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    }
-  }
-  ctx.globalAlpha = 1;
+  // recorte: solo queda lo que cae dentro del texto
+  c.globalCompositeOperation = 'destination-in';
+  let size = H * 0.62;
+  const font = (px: number) => '700 ' + px + 'px -apple-system, "Segoe UI", "Helvetica Neue", sans-serif';
+  c.font = font(size);
+  size *= Math.min(1, (W * 0.84) / c.measureText(word).width);
+  c.font = font(size);
+  c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = '#fff';
+  c.fillText(word, W / 2, H / 2);
+  c.globalCompositeOperation = 'source-over';
+  ctx.drawImage(wordBuf, 0, 0, W, H);
 }
 // Palabra en puntos: halftone que se ensambla desde una nube dispersa (estilo "AI")
 const dotsCache = new Map<string, { x: number; y: number }[]>();
