@@ -7,7 +7,7 @@ export const voluta: Variant = {
   name: 'voluta',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const cols = lineCount ?? 50, steps = 30;
-    const S = Math.min(W, H) * 0.4;
+    const S = Math.min(W, H) * 0.48;
     const rotY = t * 0.0004, rotX = 0.5 + 0.1 * Math.sin(t * 0.0003);
     const wrap = 1.4 * Math.PI + 0.4 * Math.PI * Math.sin(t * 0.0005);
     const vtwist = 1.3 * Math.sin(t * 0.0004); // twist a lo largo (efecto raro)

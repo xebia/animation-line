@@ -8,12 +8,13 @@ const LABELS: Record<string, string> = {
   montanas: 'Series temporales', olas: 'Streaming', datos: 'Métricas vivas',
   adn: 'ADN del dato', morph: 'Transformación',
   fusion: 'Integración', pcubo: 'Cubo de datos',
-  galaxia: 'Ecosistema', enjambre: 'Enjambre de agentes',
+  enjambre: 'Enjambre de agentes', bandada: 'Inteligencia colectiva',
+  cardumen: 'Flujo orquestado',
   ripples: 'Propagación', corrientes: 'Corrientes de datos', lluvia: 'Lluvia digital',
   vortices: 'Campos de fuerza', supernova: 'Explosión de datos', tornado: 'Vórtice de cómputo',
   girasol: 'Crecimiento orgánico', cometas: 'Señales entrantes',
-  radar: 'Radar de eventos', orbital: 'Átomo de datos', panal: 'Celdas de datos',
-  circuito: 'Circuito', capas: 'Capas del modelo',
+  orbital: 'Átomo de datos', panal: 'Celdas de datos',
+  circuito: 'Circuito', espectro: 'Espectro de señal',
 };
 
 let PAL = PALETTES[1];

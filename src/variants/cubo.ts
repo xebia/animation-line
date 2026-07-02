@@ -4,7 +4,7 @@ import { project3d, depthAlpha } from '../core/geom';
 export const cubo: Variant = {
   name: 'cubo',
   generate({ t, W, H }: VariantEnv): Polyline[] {
-    const n = 4, S = Math.min(W, H) * 0.16, rotY = t * 0.0004, rotX = 0.5 + 0.25 * Math.sin(t * 0.0003);
+    const n = 4, S = Math.min(W, H) * 0.2, rotY = t * 0.0004, rotX = 0.5 + 0.25 * Math.sin(t * 0.0003);
     const breathe = 1 + 0.18 * Math.sin(t * 0.0009), shear = 0.25 * Math.sin(t * 0.0006);
     const g = (i: number) => -1 + (2 * i) / (n - 1);
     const grid: { X: number; Y: number; d: number }[][][] = [];

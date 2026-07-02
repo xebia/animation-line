@@ -6,7 +6,7 @@ export const embudo: Variant = {
   name: 'embudo',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const cols = lineCount ?? 90;
-    const S = Math.min(W, H) * 0.4;
+    const S = Math.min(W, H) * 0.48;
     const rotY = t * 0.0005, rotX = 0.6 + 0.1 * Math.sin(t * 0.0003);
     const topR = 0.75, botR = 0.1, swirl = 2.0;
     const m = 0.5 + 0.5 * Math.sin(t * 0.0003); // 0 = embudo geométrico · 1 = irregular

@@ -3,7 +3,8 @@ export const VARIANT_NAMES = [
   'pliegues', 'cubo', 'flujo', 'entrelazado', 'espiral',
   'tubo', 'cono', 'cinta', 'helice', 'embudo', 'duna',
   'quilla', 'helicoide', 'voluta', 'celosia',
-  'aurora', 'moire', 'mobius', 'tunel', 'terreno', 'orbitas', 'pulso',
+  'aurora', 'moire', 'tunel', 'terreno', 'orbitas', 'pulso',
+  'giroscopio', 'toroide', 'cristal',
 ] as const;
 
 export type VariantName = (typeof VARIANT_NAMES)[number];

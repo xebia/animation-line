@@ -6,7 +6,7 @@ export const helice: Variant = {
   name: 'helice',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const rings = lineCount ?? 24, steps = 48;
-    const S = Math.min(W, H) * 0.4;
+    const S = Math.min(W, H) * 0.48;
     const rotY = t * 0.0004, rotX = 0.5 + 0.1 * Math.sin(t * 0.0003);
     const len = 1.8, r = 0.62;
     const spin = t * 0.0007;

@@ -52,21 +52,6 @@ function pcresta(ctx: CanvasRenderingContext2D, W: number, H: number, t: number,
 function premolino(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.8, rx = 0.65, gx = 112, gz = 60, cxw = Math.sin(t * 0.0003) * 1.0, czw = Math.cos(t * 0.00025) * 0.9; for (let j = gz - 1; j >= 0; j--) { const z = (j / (gz - 1) - 0.5) * 3.6; for (let i = 0; i < gx; i++) { const un = i / (gx - 1), x = (un - 0.5) * 4.4; const dx = x - cxw, dz = z - czw, d = Math.hypot(dx, dz), ang = Math.atan2(dz, dx) + (1.4 / (d + 0.4)) * Math.sin(t * 0.0006); const y = 0.4 * Math.sin(d * 3 - t * 0.001) + 0.2; const p = P3(cxw + Math.cos(ang) * d, y, czw + Math.sin(ang) * d, 0, rx, S, W, H); ctx.fillStyle = col(un); ctx.globalAlpha = 0.2 + 0.65 * p.sc; ctx.beginPath(); ctx.arc(p.X, p.Y, 0.9 * p.sc + 0.4, 0, 6.283); ctx.fill(); } } ctx.globalAlpha = 1; }
 function pcubo(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) { const S = Math.min(W, H) * 0.3, ry = t * 0.0004, rx = 0.5 + 0.2 * Math.sin(t * 0.0003), n = 8, g = (a: number) => -1 + 2 * a / (n - 1), breathe = 1 + 0.18 * Math.sin(t * 0.0009), tw = 1.3 * Math.sin(t * 0.0005); for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) for (let k = 0; k < n; k++) { const x = g(i) * breathe, y = g(j) * breathe, z = g(k) * breathe, ang = y * tw, xr = x * Math.cos(ang) - z * Math.sin(ang), zr = x * Math.sin(ang) + z * Math.cos(ang); const p = P3(xr, y, zr, ry, rx, S, W, H); ctx.fillStyle = col((g(j) + 1) / 2); ctx.globalAlpha = 0.18 + 0.6 * p.sc; ctx.beginPath(); ctx.arc(p.X, p.Y, 1.1 * p.sc + 0.4, 0, 6.283); ctx.fill(); } ctx.globalAlpha = 1; }
 
-// Galaxia espiral con rotación diferencial: el núcleo gira más rápido que los brazos
-function galaxia(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.5, rx = 0.95, ry = t * 0.00008, N = 680, arms = 3;
-  for (let i = 0; i < N; i++) {
-    const u = i / N, rad = 0.1 + 0.88 * Math.sqrt(u), arm = i % arms;
-    // dispersión determinista alrededor del brazo, más ancha hacia fuera
-    const scatter = 0.22 * rad * Math.sin(i * 12.9898) * Math.sin(i * 4.1414);
-    const ang = (arm / arms) * 6.283 + rad * 3.6 + t * 0.0011 / (0.3 + rad) + scatter;
-    const y = 0.05 * (1 - rad) * Math.sin(i * 7.7);
-    const p = P3(rad * Math.cos(ang), y, rad * Math.sin(ang), ry, rx, S, W, H);
-    ctx.fillStyle = col(1 - rad); ctx.globalAlpha = 0.2 + 0.65 * p.sc * (1 - 0.4 * rad);
-    ctx.beginPath(); ctx.arc(p.X, p.Y, (0.7 + 1.4 * (1 - rad)) * p.sc + 0.3, 0, 6.283); ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
 // Enjambre: bandada de puntos que fluye en corrientes onduladas (flow field determinista)
 function enjambre(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
   const N = 460;
@@ -280,39 +265,6 @@ function morph(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, c
 }
 // ——— Formas geométricas nuevas (tecnología / datos) ———
 
-// Radar de eventos: barrido circular que ilumina blips al pasar, con anillos guía
-function radar(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const R = Math.min(W, H) * 0.42, cx = W / 2, cy = H / 2;
-  const beam = t * 0.0011;
-  // anillos guía concéntricos
-  for (let r = 1; r <= 4; r++) {
-    const rad = R * r / 4, per = 30 + r * 18;
-    for (let i = 0; i < per; i++) {
-      const a = (i / per) * 6.283;
-      ctx.fillStyle = col(0.35); ctx.globalAlpha = 0.3;
-      ctx.beginPath(); ctx.arc(cx + rad * Math.cos(a), cy + rad * Math.sin(a), 1.1, 0, 6.283); ctx.fill();
-    }
-  }
-  // estela del haz: abanico que se apaga tras el barrido
-  for (let w = 0; w < 14; w++) {
-    const a = beam - w * 0.055, fadeW = 1 - w / 14;
-    for (let k = 0; k < 22; k++) {
-      const f = (k + 1) / 22;
-      ctx.fillStyle = col(0.8); ctx.globalAlpha = 0.55 * fadeW * fadeW * (1 - f * 0.4);
-      ctx.beginPath(); ctx.arc(cx + R * f * Math.cos(a), cy + R * f * Math.sin(a), 1.7 * fadeW + 0.4, 0, 6.283); ctx.fill();
-    }
-  }
-  // blips deterministas que se encienden al pasar el haz y se apagan despacio
-  for (let b = 0; b < 64; b++) {
-    const rad = R * (0.15 + 0.85 * ((b * 0.618) % 1)); // radios repartidos (áureo)
-    const ang = b * 2.399963;
-    const d = ((beam - ang) % 6.283 + 6.283) % 6.283;
-    const glow = Math.exp(-d * 1.1);
-    ctx.fillStyle = col(0.35 + 0.6 * glow); ctx.globalAlpha = 0.22 + 0.75 * glow;
-    ctx.beginPath(); ctx.arc(cx + rad * Math.cos(ang), cy + rad * Math.sin(ang), 1.5 + 3 * glow, 0, 6.283); ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
 // Átomo de datos: núcleo + tres órbitas inclinadas 60° con electrones brillantes
 function orbital(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
   const S = Math.min(W, H) * 0.44, ry = t * 0.00025, rx = 0.35, incl = 1.15, per = 70;
@@ -410,34 +362,81 @@ function circuito(ctx: CanvasRenderingContext2D, W: number, H: number, t: number
   }
   ctx.globalAlpha = 1;
 }
-// Capas del modelo: tres esferas concéntricas de anillos de latitud, contrarrotando
-function capas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.4, rx = 0.42;
-  const shells = [
-    { r: 0.4, dir: 1, tone: 0.85, lats: 6, per: 22 },
-    { r: 0.7, dir: -1, tone: 0.5, lats: 9, per: 30 },
-    { r: 1.0, dir: 1, tone: 0.15, lats: 12, per: 40 },
-  ];
-  shells.forEach((sh, si) => {
-    const ry = sh.dir * t * (0.00025 + si * 0.00008) + si;
-    for (let la = 0; la < sh.lats; la++) {
-      const th = ((la + 0.5) / sh.lats - 0.5) * Math.PI; // latitud
-      const y = Math.sin(th) * sh.r, rr = Math.cos(th) * sh.r;
-      for (let i = 0; i < sh.per; i++) {
-        const a = (i / sh.per) * 6.283;
-        const pr = P3(rr * Math.cos(a), y, rr * Math.sin(a), ry, rx, S, W, H);
-        ctx.fillStyle = col(sh.tone + 0.12 * (Math.sin(th) + 1) / 2);
-        ctx.globalAlpha = 0.16 + 0.6 * pr.sc;
-        ctx.beginPath(); ctx.arc(pr.X, pr.Y, (0.7 + 0.4 * si) * pr.sc + 0.4, 0, 6.283); ctx.fill();
+
+// ——— Estilo enjambre: movimiento colectivo emergente ———
+
+// Bandada: murmuración — una nube densa que se estira, gira y se contrae como un organismo
+function bandada(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const N = 460, R = Math.min(W, H);
+  // el centro de la bandada deambula por el cuadro
+  const cx = W * (0.5 + 0.22 * Math.sin(t * 0.00033) + 0.07 * Math.sin(t * 0.00013 + 2));
+  const cy = H * (0.5 + 0.18 * Math.sin(t * 0.00027 + 1) + 0.06 * Math.cos(t * 0.00017));
+  // la nube entera se alarga y gira (dirección de vuelo)
+  const dirA = t * 0.00035, stretch = 1 + 0.9 * (0.5 + 0.5 * Math.sin(t * 0.00045));
+  const ca = Math.cos(dirA), sa = Math.sin(dirA);
+  for (let k = 0; k < N; k++) {
+    const ph = k * 2.399963;
+    // cada pájaro orbita el centro con su radio y fase, respirando
+    const ang = ph + t * 0.0004 * (0.6 + 0.4 * Math.sin(ph * 3.1));
+    const rad = R * (0.07 + 0.24 * (0.5 + 0.5 * Math.sin(ph * 5.3)))
+      * (0.65 + 0.35 * Math.sin(t * 0.0008 + ph * 1.7));
+    let x0 = Math.cos(ang) * rad * stretch, y0 = Math.sin(ang) * rad / (0.6 + 0.4 * stretch);
+    const x = cx + x0 * ca - y0 * sa, y = cy + x0 * sa + y0 * ca;
+    const tw = 0.5 + 0.5 * Math.sin(t * 0.0018 + ph * 7);
+    ctx.fillStyle = col(0.25 + 0.5 * (rad / (R * 0.31)) + 0.25 * tw);
+    ctx.globalAlpha = 0.25 + 0.55 * tw;
+    ctx.beginPath(); ctx.arc(x, y, 0.8 + 1.2 * tw, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+// Cardumen: banco de puntos circulando en un bucle cerrado, en fila con carriles
+function cardumen(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const N = 420, cx = W / 2, cy = H / 2;
+  const Rx = W * 0.34, Ry = H * 0.3;
+  for (let k = 0; k < N; k++) {
+    const ph = k * 2.399963;
+    const lane = Math.sin(ph * 1.7); // carril propio (dentro/fuera del bucle)
+    const sp = 0.00022 + 0.00012 * (0.5 + 0.5 * Math.sin(ph * 2.3));
+    const u = (ph * 0.03 + t * sp) % 6.283; // posición a lo largo del bucle
+    // el bucle ondula: no es una elipse rígida
+    const wob = 1 + 0.13 * Math.sin(u * 3 + t * 0.0006) + 0.1 * lane;
+    const x = cx + Rx * wob * Math.cos(u) + 6 * Math.sin(ph * 9 + t * 0.002);
+    const y = cy + Ry * wob * Math.sin(u) + 6 * Math.cos(ph * 8 - t * 0.002);
+    const tw = 0.5 + 0.5 * Math.sin(t * 0.0016 + ph * 5);
+    ctx.fillStyle = col(u / 6.283);
+    ctx.globalAlpha = 0.25 + 0.55 * tw;
+    ctx.beginPath(); ctx.arc(x, y, 0.9 + 1.2 * tw, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+// ——— Más formas geométricas (tecnología / datos) ———
+
+// Espectro de señal: ecualizador de columnas de puntos, simétrico respecto al eje central
+function espectro(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const cols = 56, gap = H * 0.028, mid = H / 2;
+  for (let c = 0; c < cols; c++) {
+    const u = (c + 0.5) / cols;
+    const d = Math.abs(u - 0.5) * 2; // distancia al centro → espectro simétrico
+    const amp = (0.5 + 0.5 * Math.sin(d * 7 - t * 0.0014))
+      * (0.6 + 0.4 * Math.sin(d * 13 + t * 0.0009))
+      * (1 - d * 0.55);
+    const n = Math.max(1, Math.round(amp * (H * 0.42) / gap));
+    for (let k = 0; k < n; k++) {
+      const fade = 1 - k / (n + 1);
+      for (const side of [-1, 1]) {
+        ctx.fillStyle = col(0.15 + 0.6 * (k * gap / (H * 0.42)) + 0.25 * (1 - d));
+        ctx.globalAlpha = 0.2 + 0.6 * fade;
+        ctx.beginPath(); ctx.arc(u * W, mid + side * (k + 0.5) * gap, 1.1 + 1.3 * fade, 0, 6.283); ctx.fill();
       }
     }
-  });
+  }
   ctx.globalAlpha = 1;
 }
 
 export const POINTS: Record<string, PointVariant['fn']> = {
   pondas, pcresta, premolino, montanas, olas, datos, adn, morph,
-  fusion, pcubo, galaxia, enjambre,
+  fusion, pcubo, enjambre, bandada, cardumen,
   ripples, corrientes, lluvia, vortices, supernova, tornado, girasol, cometas,
-  radar, orbital, panal, circuito, capas,
+  orbital, panal, circuito, espectro,
 };

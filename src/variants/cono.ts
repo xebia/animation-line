@@ -6,7 +6,7 @@ export const cono: Variant = {
   name: 'cono',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const cols = lineCount ?? 48, steps = 36;
-    const S = Math.min(W, H) * 0.42;
+    const S = Math.min(W, H) * 0.5;
     const rotY = t * 0.0004, rotX = 0.45 + 0.1 * Math.sin(t * 0.0003);
     const m = 0.5 + 0.5 * Math.sin(t * 0.0003); // 0 = cono geométrico · 1 = irregular
     const out: Polyline[] = [];

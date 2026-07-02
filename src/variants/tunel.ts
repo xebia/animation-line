@@ -6,7 +6,7 @@ export const tunel: Variant = {
   name: 'tunel',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const rings = lineCount ?? 26, steps = 56;
-    const S = Math.min(W, H) * 0.52;
+    const S = Math.min(W, H) * 0.6;
     const range = 4, f = 2.1;
     const out: Polyline[] = [];
     for (let r = 0; r < rings; r++) {

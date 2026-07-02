@@ -8,7 +8,7 @@ export const helicoide: Variant = {
   name: 'helicoide',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const N = lineCount ?? 80;
-    const S = Math.min(W, H) * 0.42;
+    const S = Math.min(W, H) * 0.48;
     const rotY = t * 0.00015, rotX = 0.6 + 0.15 * Math.sin(t * 0.0002);
     const R = 1.0;
     const mult = 2 + 2.5 * (0.5 + 0.5 * Math.sin(t * 0.00028)); // evoluciona ~2..7

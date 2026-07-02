@@ -6,7 +6,7 @@ export const duna: Variant = {
   name: 'duna',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const lines = lineCount ?? 40, steps = 60;
-    const S = Math.min(W, H) * 0.42;
+    const S = Math.min(W, H) * 0.48;
     const rotY = -0.4 + 0.12 * Math.sin(t * 0.0003), rotX = 0.55;
     const out: Polyline[] = [];
     for (let r = 0; r < lines; r++) {

@@ -6,7 +6,7 @@ export const pulso: Variant = {
   name: 'pulso',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const rings = lineCount ?? 18, steps = 80;
-    const R = Math.min(W, H) * 0.62;
+    const R = Math.min(W, H) * 0.78;
     const cx = W / 2 + Math.min(W, H) * 0.05 * Math.sin(t * 0.0003);
     const cy = H / 2 + Math.min(W, H) * 0.04 * Math.cos(t * 0.00037);
     const out: Polyline[] = [];

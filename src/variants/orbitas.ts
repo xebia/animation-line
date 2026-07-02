@@ -7,7 +7,7 @@ export const orbitas: Variant = {
   name: 'orbitas',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const rings = lineCount ?? 22, steps = 72;
-    const S = Math.min(W, H) * 0.42;
+    const S = Math.min(W, H) * 0.48;
     const rotY = t * 0.00035, rotX = 0.35 + 0.1 * Math.sin(t * 0.00022);
     const breathe = 1 + 0.05 * Math.sin(t * 0.0008); // pulso uniforme (mantiene la simetría)
     const out: Polyline[] = [];

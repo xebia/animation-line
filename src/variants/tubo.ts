@@ -6,7 +6,7 @@ export const tubo: Variant = {
   name: 'tubo',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const cols = lineCount ?? 44, steps = 40;
-    const S = Math.min(W, H) * 0.4;
+    const S = Math.min(W, H) * 0.48;
     const rotY = t * 0.0004, rotX = 0.5 + 0.12 * Math.sin(t * 0.0003);
     const r = 0.55, len = 1.7, twist = 1.6;
     const m = 0.5 + 0.5 * Math.sin(t * 0.0003); // 0 = cilindro geométrico · 1 = irregular

@@ -6,7 +6,7 @@ export const cinta: Variant = {
   name: 'cinta',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const steps = lineCount ?? 80;
-    const S = Math.min(W, H) * 0.4;
+    const S = Math.min(W, H) * 0.48;
     const rotY = t * 0.0003, rotX = 0.5 + 0.1 * Math.sin(t * 0.0004);
     const halfW = 0.55, len = 1.8, turns = 1.5;
     const out: Polyline[] = [];

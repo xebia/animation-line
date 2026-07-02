@@ -6,7 +6,7 @@ export const terreno: Variant = {
   name: 'terreno',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const rows = lineCount ?? 44, steps = 72;
-    const S = Math.min(W, H) * 0.6;
+    const S = Math.min(W, H) * 0.72;
     const range = 3.4, spacing = range / rows, scroll = t * 0.0011, f = 1.6;
     const out: Polyline[] = [];
     for (let r = 0; r < rows; r++) {
