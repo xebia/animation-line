@@ -549,21 +549,19 @@ function textMask(word: string, W: number, H: number): ImageData {
 const inMask = (m: ImageData, x: number, y: number) =>
   x >= 0 && y >= 0 && x < m.width && y < m.height && m.data[(((y | 0) * m.width) + (x | 0)) * 4 + 3] > 120;
 
-// Palabra en lineas: los trazos de la palabra nacen como formas abstractas
-// (olas sueltas, remolino, radios, barras glitch) y vuelan hasta componer el texto.
+// Palabra en lineas: un campo de lineas continuas (estilo de las variantes) donde
+// la palabra emerge iluminandose: los tramos que cruzan las letras se encienden.
 const segsCache = new Map<string, { y: number; x0: number; x1: number; v: number }[]>();
-const hash01 = (z: number): number => { const q = Math.sin(z) * 43758.5453; return q - Math.floor(q); };
 export type ModoLineas = 'oleaje' | 'remolino' | 'latido' | 'glitch';
+const N_ROWS = 66;
 export function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col, word = 'Xebia', mode: ModoLineas = 'oleaje') {
   const key = word + '|' + (W | 0) + 'x' + (H | 0);
   let segs = segsCache.get(key);
   if (!segs) {
-    // escanea la mascara del texto por filas -> segmentos horizontales (los trazos)
     const mk = textMask(word, W | 0, H | 0);
-    const n = 66;
     segs = [];
-    for (let i = 0; i < n; i++) {
-      const v = i / (n - 1);
+    for (let i = 0; i < N_ROWS; i++) {
+      const v = i / (N_ROWS - 1);
       const y = H * (0.5 + (v - 0.5) * 0.7);
       let run = -1;
       for (let x = 0; x <= W; x += 2) {
@@ -575,59 +573,57 @@ export function palabraLineas(ctx: CanvasRenderingContext2D, W: number, H: numbe
     }
     segsCache.set(key, segs);
   }
-  // ciclo: figura geometrica -> palabra -> se deshace
+  // ciclo: campo geometrico puro -> la palabra se enciende dentro del campo -> se apaga
   const raw = 0.5 + 0.5 * Math.sin(t * 0.00028);
   const form = raw * raw * (3 - 2 * raw);
+  // la misma funcion de onda para el campo y para la palabra (la palabra VIVE en el campo);
+  // en fase libre el campo ondula mas; al formarse se calma
+  const amp1 = H * (0.006 + 0.05 * (1 - form)), amp2 = H * (0.004 + 0.02 * (1 - form));
+  const yAt = (v: number, y0: number, x: number): number => {
+    let y = y0 + amp1 * Math.sin(x * 0.006 + v * 7 - t * 0.0009)
+      + amp2 * Math.sin(x * 0.015 + t * 0.0006 + v * 3);
+    if (mode === 'latido') {
+      const px = (((t * 0.00038) % 1.25 + 1.25) % 1.25) * W * 1.2 - W * 0.1;
+      y += H * 0.045 * Math.exp(-Math.pow((x - px) / (W * 0.05), 2)) * Math.sin(x * 0.05 + v * 9 + t * 0.003);
+    } else if (mode === 'remolino') {
+      const d = Math.hypot(x - W / 2, y0 - H / 2);
+      y += H * 0.035 * (1 - form) * Math.sin(d * 0.02 - t * 0.0016);
+    } else if (mode === 'glitch') {
+      const tq = Math.floor(t * 0.0025);
+      const q = Math.sin(tq * 12.9898 + Math.floor(v * N_ROWS) * 78.233);
+      y += Math.abs(q) > 0.8 ? q * H * 0.012 * (1 - form * 0.7) : 0;
+    }
+    return y;
+  };
   ctx.lineCap = 'round';
-  ctx.lineWidth = 1.2; // mismo grosor que las líneas de las animaciones
-  const P = 14;
-  const total = segs.length;
-  for (let sI = 0; sI < total; sI++) {
-    const sg = segs[sI];
-    const L = sg.x1 - sg.x0;
-    const ph = (sI * 0.618) % 1;
-    ctx.strokeStyle = col(sg.v);
-    ctx.globalAlpha = 0.55 + 0.45 * form;
+  // paso 1: el campo — lineas continuas de lado a lado
+  ctx.lineWidth = 1.1;
+  for (let i = 0; i < N_ROWS; i++) {
+    const v = i / (N_ROWS - 1);
+    const y0 = H * (0.5 + (v - 0.5) * 0.7);
+    ctx.strokeStyle = col(v);
+    ctx.globalAlpha = 0.14 + 0.3 * (1 - form);
     ctx.beginPath();
-    for (let k = 0; k <= P; k++) {
-      const u = k / P;
-      const fx = sg.x0 + u * L;
-      const fy = sg.y + H * 0.0022 * Math.sin(fx * 0.02 + sg.v * 6 + t * 0.001);
-      let ax: number, ay: number;
-      if (mode === 'oleaje') {
-        // campo de ondas limpias: mismos trazos repartidos en filas que ondulan
-        const row = sI % 9;
-        ax = fx;
-        ay = H * (0.1 + 0.8 * row / 8)
-          + H * 0.08 * Math.sin(fx * 0.0045 + row * 0.9 - t * 0.0009)
-          + H * 0.025 * Math.sin(fx * 0.012 + t * 0.0006);
-      } else if (mode === 'remolino') {
-        // anillos concentricos discontinuos girando (los trazos son los "dientes")
-        const r = sI % 6;
-        const RAD = Math.min(W, H) * (0.13 + 0.1 * r);
-        const dir = r % 2 === 0 ? 1 : -1;
-        const a = ph * 6.283 + dir * t * 0.0005 + (u - 0.5) * (L / RAD);
-        ax = W / 2 + RAD * 1.5 * Math.cos(a);
-        ay = H / 2 + RAD * Math.sin(a);
-      } else if (mode === 'latido') {
-        // sol de radios equiespaciados que respira
-        const a = (sI / total) * 6.283 + t * 0.00025;
-        const inner = Math.min(W, H) * (0.1 + 0.34 * ph) * (1 + 0.14 * Math.sin(t * 0.0016));
-        const rad = inner + u * L * 0.7;
-        ax = W / 2 + rad * 1.5 * Math.cos(a);
-        ay = H / 2 + rad * Math.sin(a);
-      } else {
-        // reticula digital: guiones ordenados en una malla que saltan de celda (glitch)
-        const tq = Math.floor(t * 0.0025);
-        const gr = Math.floor(hash01(tq * 1.7 + ph * 13.7) * 12);
-        const gc = hash01(tq * 3.1 + ph * 7.9);
-        ax = W * 0.06 + gc * W * 0.78 + u * L * 0.85;
-        ay = H * (0.08 + 0.84 * gr / 11);
-      }
-      const x = ax + (fx - ax) * form, y = ay + (fy - ay) * form;
-      if (k === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    for (let x = 0; x <= W; x += W / 130) {
+      const y = yAt(v, y0, x);
+      if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
     ctx.stroke();
+  }
+  // paso 2: la palabra — los mismos tramos de linea, encendidos
+  if (form > 0.02) {
+    ctx.lineWidth = 1.3;
+    for (const sg of segs) {
+      ctx.strokeStyle = col(sg.v);
+      ctx.globalAlpha = form;
+      ctx.beginPath();
+      const step = (sg.x1 - sg.x0) / Math.max(4, Math.round((sg.x1 - sg.x0) / (W / 130)));
+      for (let x = sg.x0; x <= sg.x1 + 0.1; x += step) {
+        const y = yAt(sg.v, sg.y, x);
+        if (x === sg.x0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
   }
   ctx.globalAlpha = 1;
 }
