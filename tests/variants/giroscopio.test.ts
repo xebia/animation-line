@@ -3,10 +3,10 @@ import { giroscopio } from '../../src/variants/giroscopio';
 import { allFinite } from './helpers';
 
 describe('giroscopio', () => {
-  it('produces 16 nested tilting rings, finite & deterministic', () => {
+  it('produces 18 identical precessing rings, finite & deterministic', () => {
     const a = giroscopio.generate({ t: 500, W: 800, H: 600 });
-    expect(a.length).toBe(16);
-    expect(a[0].pts.length).toBe(81 * 2);
+    expect(a.length).toBe(18);
+    expect(a[0].pts.length).toBe(91 * 2);
     expect(allFinite(a)).toBe(true);
     expect(a).toEqual(giroscopio.generate({ t: 500, W: 800, H: 600 }));
   });

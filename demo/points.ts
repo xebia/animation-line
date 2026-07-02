@@ -185,25 +185,6 @@ function supernova(ctx: CanvasRenderingContext2D, W: number, H: number, t: numbe
   }
   ctx.globalAlpha = 1;
 }
-// Tornado: columna de puntos girando, estrecha abajo y abierta arriba, que se mece
-function tornado(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.52, N = 640, f = 4.2;
-  for (let i = 0; i < N; i++) {
-    const u = i / N, y = 1.05 - u * 2.1; // arriba → abajo
-    const hh = (1.05 - y) / 2.1;         // 0 arriba → 1 abajo
-    const rad = 0.16 + 0.62 * Math.pow(1 - hh, 1.7);           // embudo
-    const sway = 0.22 * Math.sin(hh * 2.4 + t * 0.0007);        // la columna se mece
-    const ang = i * 2.399963 + t * 0.0016 * (0.7 + hh * 1.1);   // abajo gira más rápido
-    const jag = 1 + 0.16 * Math.sin(i * 7.7 + t * 0.001);
-    const x = sway + rad * jag * Math.cos(ang), z = rad * jag * Math.sin(ang);
-    const sc = f / (f + z * 2);
-    const X = W / 2 + x * S * sc, Y = H / 2 + y * S * 0.92 * sc;
-    ctx.fillStyle = col(1 - hh);
-    ctx.globalAlpha = 0.18 + 0.55 * sc * (0.5 + 0.5 * Math.sin(i * 3.1 + t * 0.002));
-    ctx.beginPath(); ctx.arc(X, Y, 0.9 + 1.1 * (1 - hh), 0, 6.283); ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
 // Girasol: espiral filotáctica (ángulo áureo) que respira, con ondas de tamaño radiando
 function girasol(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
   const N = 720, R = Math.min(W, H) * 0.46;
@@ -242,24 +223,12 @@ function cometas(ctx: CanvasRenderingContext2D, W: number, H: number, t: number,
 }
 // ADN: doble hélice de puntos (data strands) con peldaños, girando
 function adn(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.4, ry = t * 0.0004, rx = 0.5 + 0.15 * Math.sin(t * 0.0003), N = 120, turns = 3, len = 1.9, r = 0.4;
+  const S = Math.min(W, H) * 0.5, ry = 0.18 * Math.sin(t * 0.00025), rx = 0.4 + 0.12 * Math.sin(t * 0.0003), N = 170, turns = 3, len = 2.8, r = 0.46;
   const node = (strand: number, u: number) => { const x = -len / 2 + u * len, th = u * turns * 6.283 + t * 0.0006 + strand * Math.PI; return { x, y: r * Math.cos(th), z: r * Math.sin(th) }; };
   for (let i = 0; i < N; i++) {
     const u = i / (N - 1);
     if (i % 5 === 0) { const a = node(0, u), b = node(1, u), pa = P3(a.x, a.y, a.z, ry, rx, S, W, H), pb = P3(b.x, b.y, b.z, ry, rx, S, W, H); ctx.strokeStyle = col(0.5); ctx.globalAlpha = 0.22; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(pa.X, pa.Y); ctx.lineTo(pb.X, pb.Y); ctx.stroke(); }
     for (const strand of [0, 1]) { const p = node(strand, u), pr = P3(p.x, p.y, p.z, ry, rx, S, W, H); ctx.fillStyle = col(strand ? 0.2 : 0.85); ctx.globalAlpha = 0.3 + 0.6 * pr.sc; ctx.beginPath(); ctx.arc(pr.X, pr.Y, 1.4 * pr.sc + 0.5, 0, 6.283); ctx.fill(); }
-  }
-  ctx.globalAlpha = 1;
-}
-// Morph: la nube transiciona fluyendo entre esfera y toro
-function morph(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
-  const S = Math.min(W, H) * 0.36, ry = t * 0.0004, rx = 0.5, m = 0.5 + 0.5 * Math.sin(t * 0.0004);
-  for (let i = 0; i < SPH.length; i++) {
-    const p = SPH[i], lon = Math.atan2(p.z, p.x), lat = Math.asin(Math.max(-1, Math.min(1, p.y))), R = 0.55, r = 0.25, c = Math.cos(lat * 2);
-    const tx = (R + r * c) * Math.cos(lon), ty = r * Math.sin(lat * 2), tz = (R + r * c) * Math.sin(lon);
-    const x = p.x * (1 - m) + tx * m, y = p.y * (1 - m) + ty * m, z = p.z * (1 - m) + tz * m, pr = P3(x, y, z, ry, rx, S, W, H);
-    ctx.fillStyle = col((p.y + 1) / 2); ctx.globalAlpha = 0.3 + 0.6 * pr.sc;
-    ctx.beginPath(); ctx.arc(pr.X, pr.Y, 1.3 * pr.sc + 0.4, 0, 6.283); ctx.fill();
   }
   ctx.globalAlpha = 1;
 }
@@ -434,9 +403,67 @@ function espectro(ctx: CanvasRenderingContext2D, W: number, H: number, t: number
   ctx.globalAlpha = 1;
 }
 
+// Clustering: los puntos se agrupan en clusteres y se dispersan en ciclos (k-means visual)
+function clustering(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const N = 460, K = 5;
+  // fase suave: 0 = nube dispersa -> 1 = agrupado en clusteres
+  const raw = 0.5 + 0.5 * Math.sin(t * 0.00045);
+  const m = raw * raw * (3 - 2 * raw); // easing
+  for (let i = 0; i < N; i++) {
+    const k = i % K;
+    // centro del cluster: pentagono que deriva lentamente
+    const ca = (k / K) * 6.283 + t * 0.00008;
+    const cx = W * (0.5 + 0.26 * Math.cos(ca)), cy = H * (0.5 + 0.26 * Math.sin(ca));
+    // posicion base dispersa (determinista)
+    const bx = W * (0.5 + 0.46 * Math.sin(i * 12.9898)), by = H * (0.5 + 0.44 * Math.sin(i * 4.1414));
+    // radio propio dentro del cluster
+    const rr = (18 + 40 * (0.5 + 0.5 * Math.sin(i * 7.7))) * (Math.min(W, H) / 600);
+    const aa = i * 2.399963 + t * 0.0004;
+    const tx = cx + rr * Math.cos(aa), ty = cy + rr * Math.sin(aa);
+    const x = bx + (tx - bx) * m, y = by + (ty - by) * m;
+    const tw = 0.5 + 0.5 * Math.sin(t * 0.0015 + i * 5.3);
+    ctx.fillStyle = col(k / (K - 1));
+    ctx.globalAlpha = 0.2 + 0.45 * tw + 0.25 * m;
+    ctx.beginPath(); ctx.arc(x, y, 0.9 + 1.1 * tw + 0.8 * m, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+// Descenso de gradiente: particulas espiralando hacia el minimo de un cuenco 3D
+function descenso(ctx: CanvasRenderingContext2D, W: number, H: number, t: number, col: Col) {
+  const S = Math.min(W, H) * 0.55, rx = 0.75, ry = t * 0.00012;
+  // el cuenco: anillos de contorno tenues
+  for (let r = 1; r <= 6; r++) {
+    const rad = r / 6, per = 14 + r * 12;
+    for (let i = 0; i < per; i++) {
+      const a = (i / per) * 6.283;
+      const pr = P3(rad * Math.cos(a), 0.55 * rad * rad, rad * Math.sin(a), ry, rx, S, W, H);
+      ctx.fillStyle = col(0.3); ctx.globalAlpha = 0.16 + 0.1 * (1 - rad);
+      ctx.beginPath(); ctx.arc(pr.X, pr.Y, 0.9, 0, 6.283); ctx.fill();
+    }
+  }
+  // particulas descendiendo en espiral, con estela
+  const M = 26, trail = 9;
+  for (let mI = 0; mI < M; mI++) {
+    const sp = 0.00009 + 0.00007 * (0.5 + 0.5 * Math.sin(mI * 5.9));
+    const off = (mI * 0.382) % 1;
+    const ph = ((t * sp + off) % 1 + 1) % 1; // 0 = borde -> 1 = minimo
+    for (let k = 0; k < trail; k++) {
+      const pk = Math.max(0, ph - k * 0.012);
+      const rad = Math.pow(1 - pk, 1.25);
+      const a = mI * 2.399963 + pk * 9;
+      const pr = P3(rad * Math.cos(a), 0.55 * rad * rad, rad * Math.sin(a), ry, rx, S, W, H);
+      const fade = 1 - k / trail;
+      ctx.fillStyle = col(0.25 + 0.6 * (1 - rad) + 0.15 * (k === 0 ? 1 : 0));
+      ctx.globalAlpha = (0.12 + 0.6 * fade * fade) * Math.min(1, (1 - pk) * 6) * (0.4 + 0.6 * pr.sc);
+      ctx.beginPath(); ctx.arc(pr.X, pr.Y, (0.8 + 1.4 * fade) * pr.sc + (k === 0 ? 0.7 : 0), 0, 6.283); ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
 export const POINTS: Record<string, PointVariant['fn']> = {
-  pondas, pcresta, premolino, montanas, olas, datos, adn, morph,
+  pondas, pcresta, premolino, montanas, olas, datos, adn,
   fusion, pcubo, enjambre, bandada, cardumen,
-  ripples, corrientes, lluvia, vortices, supernova, tornado, girasol, cometas,
-  orbital, panal, circuito, espectro,
+  ripples, corrientes, lluvia, vortices, supernova, girasol, cometas,
+  orbital, panal, circuito, espectro, clustering, descenso,
 };

@@ -28,10 +28,12 @@ import { pulso } from './pulso';
 import { giroscopio } from './giroscopio';
 import { toroide } from './toroide';
 import { cristal } from './cristal';
+import { frunce } from './frunce';
+import { dipolo } from './dipolo';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
   flujo, entrelazado, espiral, tubo, cono, cinta, helice, embudo, duna,
   quilla, helicoide, voluta, celosia, aurora, moire,
-  tunel, terreno, orbitas, pulso, giroscopio, toroide, cristal,
+  tunel, terreno, orbitas, pulso, giroscopio, toroide, cristal, frunce, dipolo,
 };

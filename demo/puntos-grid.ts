@@ -6,15 +6,16 @@ import type { PBg } from './points';
 const LABELS: Record<string, string> = {
   pondas: 'Flujo de datos', pcresta: 'Pico de carga', premolino: 'Turbulencia',
   montanas: 'Series temporales', olas: 'Streaming', datos: 'Métricas vivas',
-  adn: 'ADN del dato', morph: 'Transformación',
+  adn: 'ADN del dato',
   fusion: 'Integración', pcubo: 'Cubo de datos',
   enjambre: 'Enjambre de agentes', bandada: 'Inteligencia colectiva',
   cardumen: 'Flujo orquestado',
   ripples: 'Propagación', corrientes: 'Corrientes de datos', lluvia: 'Lluvia digital',
-  vortices: 'Campos de fuerza', supernova: 'Explosión de datos', tornado: 'Vórtice de cómputo',
+  vortices: 'Campos de fuerza', supernova: 'Explosión de datos',
   girasol: 'Crecimiento orgánico', cometas: 'Señales entrantes',
   orbital: 'Átomo de datos', panal: 'Celdas de datos',
   circuito: 'Circuito', espectro: 'Espectro de señal',
+  clustering: 'Clustering', descenso: 'Descenso de gradiente',
 };
 
 let PAL = PALETTES[1];
