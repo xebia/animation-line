@@ -3,6 +3,7 @@ export const VARIANT_NAMES = [
   'pliegues', 'cubo', 'flujo', 'entrelazado', 'espiral',
   'tubo', 'cono', 'cinta', 'helice', 'embudo', 'duna',
   'quilla', 'helicoide', 'voluta', 'celosia',
+  'aurora', 'moire', 'mobius', 'tunel', 'terreno', 'orbitas', 'pulso',
 ] as const;
 
 export type VariantName = (typeof VARIANT_NAMES)[number];
@@ -23,8 +24,9 @@ export interface LineFieldOptions {
   thickness?: number;             // grosor de línea en px, default 1.7
 }
 
-/** Pixel-space polyline: pts = [x0,y0, x1,y1, ...] in [0,W]×[0,H], y-down. */
-export interface Polyline { pts: number[]; s: number; }
+/** Pixel-space polyline: pts = [x0,y0, x1,y1, ...] in [0,W]×[0,H], y-down.
+ *  a: alfa opcional 0–1 (fade de profundidad en variantes 3D), default 1. */
+export interface Polyline { pts: number[]; s: number; a?: number; }
 
 export interface VariantEnv { t: number; W: number; H: number; lineCount?: number; }
 

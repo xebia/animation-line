@@ -20,7 +20,9 @@ function lum(rgb: [number, number, number]): number {
 
 export function resolveBackground(bg: Background): ResolvedBackground {
   if (bg.type === 'transparent') {
-    return { draw: false, from: [0, 0, 0], to: [0, 0, 0], angle: 0, blend: 'add', clearAlpha: 0 };
+    // 'normal' (no aditivo) + alpha 1.0 → las líneas se pintan sólidas sobre la imagen,
+    // sin ese efecto translúcido/lavado que daba el blend aditivo.
+    return { draw: false, from: [0, 0, 0], to: [0, 0, 0], angle: 0, blend: 'normal', clearAlpha: 0 };
   }
   const from = bg.type === 'gradient' ? hexToUnit(bg.from) : hexToUnit(bg.color);
   const to = bg.type === 'gradient' ? hexToUnit(bg.to) : from;

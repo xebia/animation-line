@@ -4,10 +4,10 @@
 <title>xebia-animation-line · líneas</title>
 <style>
   *{box-sizing:border-box;margin:0;}
-  body{background:#05080f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#cde;}
-  .nav{position:sticky;top:0;z-index:40;display:flex;gap:6px;align-items:center;padding:12px 20px;background:rgba(5,8,15,.82);backdrop-filter:blur(8px);border-bottom:1px solid #ffffff14;}
-  .nav a{color:#cfd6e6;text-decoration:none;font-size:13px;padding:6px 12px;border-radius:99px;border:1px solid #ffffff22;}
-  .nav a.home{margin-right:auto;font-weight:700;border:none;}
+  body{background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#cde;}
+  .nav{position:sticky;top:0;z-index:40;display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 18px;background:rgba(5,8,15,.82);backdrop-filter:blur(8px);border-bottom:1px solid #ffffff14;}
+  .nav a{color:#cfd6e6;text-decoration:none;font-size:13px;white-space:nowrap;flex:0 0 auto;padding:6px 13px;border-radius:99px;border:1px solid #ffffff22;}
+  .nav a.home{margin-right:10px;font-weight:700;border:none;font-size:14px;}
   .nav a.active{background:#fff;color:#0a1a24;border-color:#fff;}
   .nav a:not(.active):not(.home):hover{background:#ffffff16;border-color:#ffffff66;}
   .ctrls{position:sticky;top:47px;z-index:30;display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;padding:12px 20px;background:rgba(5,8,15,.78);backdrop-filter:blur(8px);border-bottom:1px solid #ffffff10;}
@@ -16,19 +16,17 @@
   .swat{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid #ffffff44;}
   .swat.sq{border-radius:6px;}
   .swat.active{border-color:#fff;transform:scale(1.12);}
-  #grid{max-width:1500px;margin:0 auto;padding:22px;display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
-  .card{position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;background:#06101a;border:1px solid #ffffff14;box-shadow:0 8px 30px #0006;}
+  #grid{max-width:1320px;margin:0 auto;padding:56px 24px;display:grid;grid-template-columns:1fr;gap:64px;}
+  .card{position:relative;aspect-ratio:16/9;overflow:hidden;background:#06101a;}
   .card .stage{position:absolute;inset:0;}
-  .card .label{position:absolute;left:14px;top:12px;z-index:2;font-size:12px;letter-spacing:.09em;text-transform:uppercase;opacity:.9;text-shadow:0 1px 6px #000a;}
-  @media (max-width:900px){ #grid{grid-template-columns:1fr;} .card{aspect-ratio:16/9;} }
+  .card .label{position:absolute;left:16px;top:14px;z-index:2;font-size:12px;letter-spacing:.09em;text-transform:uppercase;opacity:.9;text-shadow:0 1px 6px #000a;}
+  @media (max-width:900px){ #grid{padding:28px 16px;gap:36px;} }
 </style></head>
 <body>
   <nav class="nav">
-    <a class="home" href="./">xebia-animation-line</a>
+    <a class="home" href="./">Xebia</a>
     <a class="active" href="./lineas.html">Líneas</a>
     <a href="./puntos.html">Puntos</a>
-    <a href="./cards.html">Cards líneas</a>
-    <a href="./puntos-cards.html">Cards puntos</a>
   </nav>
   <div class="ctrls">
     <div class="grp"><span class="lbl">Paleta</span><span id="pal" style="display:flex;gap:7px;"></span></div>

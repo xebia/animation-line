@@ -19,6 +19,13 @@ export function irr(a: number, amp = 0.18): number {
   );
 }
 
+/** Alfa de profundidad: d (media de project3d().d de la línea) → fade.
+ *  Frente (d=-range) opaco, fondo (d=+range) tenue. */
+export function depthAlpha(d: number, range = 1): number {
+  const tt = Math.max(0, Math.min(1, (range - d) / (2 * range)));
+  return 0.35 + 0.65 * tt;
+}
+
 /** Rotate (x,y,z) about Y then X, apply perspective, map to pixel space. */
 export function project3d(
   x: number, y: number, z: number,

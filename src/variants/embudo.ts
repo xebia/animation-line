@@ -1,5 +1,5 @@
 import type { Variant, Polyline, VariantEnv } from '../core/types';
-import { project3d, irr } from '../core/geom';
+import { project3d, irr, depthAlpha } from '../core/geom';
 
 /** Embudo: hiperboloide/vórtice — líneas del borde superior a un anillo inferior girado. */
 export const embudo: Variant = {
@@ -19,7 +19,7 @@ export const embudo: Variant = {
       const A = project3d(tr * Math.cos(a), 0.7, tr * Math.sin(a), rotX, rotY, S, W, H);
       const bb = a + swirl + 0.6 * Math.sin(t * 0.0007) + t * 0.0004;
       const B = project3d(br * Math.cos(bb), -0.7, br * Math.sin(bb), rotX, rotY, S, W, H);
-      out.push({ pts: [A.X, A.Y, B.X, B.Y], s });
+      out.push({ pts: [A.X, A.Y, B.X, B.Y], s, a: depthAlpha((A.d + B.d) / 2, 0.9) });
     }
     return out;
   },

@@ -49,7 +49,7 @@ VARIANT_NAMES.forEach((name) => {
   label.textContent = name;
   card.append(stage, label);
   grid.appendChild(card);
-  const slot: Slot = { el: stage, opts: { variant: name, palette: PAL, background: BG }, field: null };
+  const slot: Slot = { el: stage, opts: { variant: name, palette: PAL, background: BG, thickness: 1.1 }, field: null };
   slots.push(slot);
   io.observe(stage);
 });

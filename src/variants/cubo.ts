@@ -1,5 +1,5 @@
 import type { Variant, Polyline, VariantEnv } from '../core/types';
-import { project3d } from '../core/geom';
+import { project3d, depthAlpha } from '../core/geom';
 
 export const cubo: Variant = {
   name: 'cubo',
@@ -21,7 +21,7 @@ export const cubo: Variant = {
     const dcol = (p: { d: number }) => Math.max(0, Math.min(1, (p.d + 1.6) / 3.2));
     const out: Polyline[] = [];
     const edge = (a: { X: number; Y: number; d: number }, b: { X: number; Y: number; d: number }) =>
-      out.push({ pts: [a.X, a.Y, b.X, b.Y], s: dcol(a) });
+      out.push({ pts: [a.X, a.Y, b.X, b.Y], s: dcol(a), a: depthAlpha((a.d + b.d) / 2, 1.6) });
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) for (let k = 0; k < n; k++) {
       const p = grid[i][j][k];
       if (i < n - 1) edge(p, grid[i + 1][j][k]);

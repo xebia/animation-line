@@ -19,9 +19,17 @@ import { quilla } from './quilla';
 import { helicoide } from './helicoide';
 import { voluta } from './voluta';
 import { celosia } from './celosia';
+import { aurora } from './aurora';
+import { moire } from './moire';
+import { mobius } from './mobius';
+import { tunel } from './tunel';
+import { terreno } from './terreno';
+import { orbitas } from './orbitas';
+import { pulso } from './pulso';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
   flujo, entrelazado, espiral, tubo, cono, cinta, helice, embudo, duna,
-  quilla, helicoide, voluta, celosia,
+  quilla, helicoide, voluta, celosia, aurora, moire, mobius,
+  tunel, terreno, orbitas, pulso,
 };

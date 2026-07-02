@@ -1,5 +1,5 @@
 import type { Variant, Polyline, VariantEnv } from '../core/types';
-import { project3d } from '../core/geom';
+import { project3d, depthAlpha } from '../core/geom';
 
 /** Helicoide: string-art de cuerdas sobre un anillo 3D. Cada punto i se une a (i·mult),
  *  con un multiplicador que evoluciona en el tiempo → patrones de cruces que se transforman
@@ -25,7 +25,7 @@ export const helicoide: Variant = {
       const P = ring(a1), Q = ring(a2);
       const A = project3d(P.x, P.y, P.z, rotX, rotY, S, W, H);
       const B = project3d(Q.x, Q.y, Q.z, rotX, rotY, S, W, H);
-      out.push({ pts: [A.X, A.Y, B.X, B.Y], s });
+      out.push({ pts: [A.X, A.Y, B.X, B.Y], s, a: depthAlpha((A.d + B.d) / 2, 0.9) });
     }
     return out;
   },
