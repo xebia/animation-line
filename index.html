@@ -11,18 +11,15 @@
   h1{font-size:clamp(30px,6vw,56px);font-weight:600;letter-spacing:-.03em;margin:10px 0 6px;text-align:center;}
   .lead{opacity:.6;font-size:15px;text-align:center;max-width:46ch;margin-bottom:36px;}
   .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:820px;width:100%;}
-  a.tile{position:relative;display:block;text-decoration:none;color:#fff;border-radius:18px;overflow:hidden;
-    aspect-ratio:4/3;padding:22px;border:1px solid #ffffff1f;transition:transform .15s,border-color .15s;
+  a.tile{position:relative;display:block;text-decoration:none;color:#fff;overflow:hidden;
+    aspect-ratio:4/3;padding:22px;transition:opacity .15s;
     display:flex;flex-direction:column;justify-content:flex-end;}
-  a.tile:hover{transform:translateY(-4px);border-color:#ffffff55;}
+  a.tile:hover{opacity:.9;}
   a.tile .t{font-size:22px;font-weight:600;letter-spacing:-.02em;}
   a.tile .d{font-size:13px;opacity:.85;margin-top:6px;}
   a.tile .arrow{position:absolute;top:18px;right:20px;font-size:18px;opacity:.7;}
   .tile.lineas{background:linear-gradient(150deg,#0b2233,#123a52);}
-  .tile.cards{background:linear-gradient(150deg,#2a164d,#3a1d5c);}
   .tile.puntos{background:linear-gradient(150deg,#06223a,#0a3a3a);}
-  .tile.pcards{background:linear-gradient(150deg,#161a3a,#2a2350);}
-  .tile.imagen{background:linear-gradient(150deg,#3a1d2c,#52233a);}
   footer{margin-top:34px;font-size:12px;opacity:.4;}
   @media (max-width:760px){ .tiles{grid-template-columns:1fr;} a.tile{aspect-ratio:16/9;} }
 </style></head>
@@ -31,11 +28,8 @@
   <h1>animation-line</h1>
   <p class="lead">Sistema generativo de animaciones de líneas y puntos. Navega por las secciones.</p>
   <div class="tiles">
-    <a class="tile lineas" href="./lineas.html"><span class="arrow">→</span><div class="t">Líneas</div><div class="d">20 variantes de campos de líneas: superficies regladas, frunce, fusión…</div></a>
+    <a class="tile lineas" href="./lineas.html"><span class="arrow">→</span><div class="t">Líneas</div><div class="d">27 variantes de campos de líneas: superficies regladas, frunce, fusión…</div></a>
     <a class="tile puntos" href="./puntos.html"><span class="arrow">→</span><div class="t">Puntos</div><div class="d">Animaciones de puntos: fusión 3D, vórtice, olas, montañas…</div></a>
-    <a class="tile cards" href="./cards.html"><span class="arrow">→</span><div class="t">Cards &amp; Heroes · líneas</div><div class="d">Componentes de marca con las animaciones de líneas.</div></a>
-    <a class="tile pcards" href="./puntos-cards.html"><span class="arrow">→</span><div class="t">Cards &amp; Heroes · puntos</div><div class="d">Componentes con las animaciones de puntos (data &amp; AI).</div></a>
-    <a class="tile imagen" href="./imagen.html"><span class="arrow">→</span><div class="t">Imagen</div><div class="d">Animaciones de puntos sobre imágenes de fondo, con opacidad y posición.</div></a>
   </div>
   <footer>github.com/xebia/animation-line</footer>
 </body></html>

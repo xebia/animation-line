@@ -16,23 +16,19 @@
   .swat{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid #ffffff44;}
   .swat.sq{border-radius:6px;}
   .swat.active{border-color:#fff;transform:scale(1.12);}
-  #grid{max-width:1500px;margin:0 auto;padding:22px;display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
-  .card{position:relative;aspect-ratio:4/3;border-radius:16px;overflow:hidden;background:#06101a;border:1px solid #ffffff14;box-shadow:0 8px 30px #0006;}
+  #grid{max-width:1320px;margin:0 auto;padding:56px 24px;display:grid;grid-template-columns:1fr;gap:64px;}
+  .card{position:relative;aspect-ratio:16/9;overflow:hidden;background:#06101a;}
   .card .stage{position:absolute;inset:0;}
-  .card .label{position:absolute;left:14px;top:12px;z-index:2;font-size:12px;letter-spacing:.09em;text-transform:uppercase;opacity:.9;text-shadow:0 1px 6px #000a;}
-  @media (max-width:900px){ #grid{grid-template-columns:1fr;} .card{aspect-ratio:16/9;} }
-</style>  <script type="module" crossorigin src="./assets/lineas-CCHKO2-n.js"></script>
-  <link rel="modulepreload" crossorigin href="./assets/modulepreload-polyfill-C2xYpwEn.js">
-  <link rel="modulepreload" crossorigin href="./assets/src-BJlqj_vu.js">
+  .card .label{position:absolute;left:16px;top:14px;z-index:2;font-size:12px;letter-spacing:.09em;text-transform:uppercase;opacity:.9;text-shadow:0 1px 6px #000a;}
+  @media (max-width:900px){ #grid{padding:28px 16px;gap:36px;} }
+</style>  <script type="module" crossorigin src="./assets/lineas-jFThSa_Q.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/points-sCtYwU4-.js">
 </head>
 <body>
   <nav class="nav">
     <a class="home" href="./">Xebia</a>
     <a class="active" href="./lineas.html">Líneas</a>
     <a href="./puntos.html">Puntos</a>
-    <a href="./cards.html">Cards líneas</a>
-    <a href="./puntos-cards.html">Cards puntos</a>
-    <a href="./imagen.html">Imagen</a>
   </nav>
   <div class="ctrls">
     <div class="grp"><span class="lbl">Paleta</span><span id="pal" style="display:flex;gap:7px;"></span></div>
