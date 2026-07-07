@@ -13,7 +13,7 @@ const PALETTES = [
   ['#8be9ff', '#c9a0ff', '#ff9bd6'],
   ['#ffffff', '#eaf1ff', '#ffffff'],
 ];
-const BACKGROUNDS: { name: string; bg: Background; css: string }[] = [
+const UI_BACKGROUNDS: { name: string; bg: Background; css: string }[] = [
   { name: 'Oscuro', bg: { type: 'gradient', from: '#06101a', to: '#0a1b2b' }, css: 'linear-gradient(135deg,#06101a,#0a1b2b)' },
   { name: 'Marca', bg: { type: 'gradient', from: '#0b1f3a', to: '#3a1d5c' }, css: 'linear-gradient(135deg,#0b1f3a,#3a1d5c)' },
   { name: 'Negro', bg: { type: 'solid', color: '#000000' }, css: '#000000' },
@@ -21,7 +21,7 @@ const BACKGROUNDS: { name: string; bg: Background; css: string }[] = [
   { name: 'Lavanda', bg: { type: 'gradient', from: '#eef0ff', to: '#dfeaff' }, css: 'linear-gradient(135deg,#eef0ff,#dfeaff)' },
 ];
 let PAL = PALETTES[1];
-let BG = BACKGROUNDS[1].bg;
+let BG = UI_BACKGROUNDS[1].bg;
 
 // lazy-mount: solo anima lo visible (evita el límite de contextos WebGL)
 interface Slot { el: HTMLElement; opts: LineFieldOptions; field: LineField | null; }
@@ -112,7 +112,7 @@ PALETTES.forEach((p, idx) => {
   palEl.appendChild(d);
 });
 const bgEl = document.getElementById('backgrounds')!;
-BACKGROUNDS.forEach((b, idx) => {
+UI_BACKGROUNDS.forEach((b, idx) => {
   const d = document.createElement('span');
   d.className = 'swat sq' + (idx === 1 ? ' active' : '');
   d.title = b.name;
