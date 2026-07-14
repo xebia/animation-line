@@ -10,7 +10,7 @@ export const LINE_NAMES = [
 
 /** Tramas: una forma se repite en una rejilla que cubre el lienzo y respira. */
 export const PATTERN_NAMES = [
-  'tramado', 'mallax', 'teselas', 'panal', 'cruces', 'extrusion',
+  'tramado', 'mallax', 'teselas', 'cruces', 'extrusion',
   // familia 3D: cámara axonométrica compartida (core/iso.ts), cubos de aristas abiertas
   'bloques', 'torres', 'barras', 'escaleras', 'pozos',
   'placas', 'rayado', 'nidos', 'prismas', 'capas', 'circuito',

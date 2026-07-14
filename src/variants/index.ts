@@ -33,7 +33,6 @@ import { dipolo } from './dipolo';
 import { tramado } from './tramado';
 import { mallax } from './mallax';
 import { teselas } from './teselas';
-import { panal } from './panal';
 import { cruces } from './cruces';
 import { extrusion } from './extrusion';
 import { bloques } from './bloques';
@@ -72,7 +71,7 @@ export const VARIANTS: Record<VariantName, Variant> = {
   flujo, entrelazado, espiral, tubo, cono, cinta, helice, embudo, duna,
   quilla, helicoide, voluta, celosia, aurora, moire,
   tunel, terreno, orbitas, pulso, giroscopio, toroide, cristal, frunce, dipolo,
-  tramado, mallax, teselas, panal, cruces, extrusion,
+  tramado, mallax, teselas, cruces, extrusion,
   bloques, torres, barras, escaleras, pozos,
   placas, rayado, nidos, prismas, capas, circuito,
   celdilla, nodos,
