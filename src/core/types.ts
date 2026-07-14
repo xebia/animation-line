@@ -20,6 +20,9 @@ export const PATTERN_NAMES = [
   'damero', 'subdivision',
   'pixeles', 'terrazas', 'voxel',
   'cintas', 'rejas',
+  // teselados planos de trazo fino, en la línea de las primeras
+  'laberinto', 'espiga', 'trenzado', 'mosaico', 'cruceta',
+  'radial', 'guiones', 'sierra', 'escalonado', 'diamante',
 ] as const;
 
 export const VARIANT_NAMES = [...LINE_NAMES, ...PATTERN_NAMES] as const;

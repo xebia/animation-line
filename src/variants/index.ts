@@ -54,6 +54,16 @@ import { terrazas } from './terrazas';
 import { voxel } from './voxel';
 import { cintas } from './cintas';
 import { rejas } from './rejas';
+import { laberinto } from './laberinto';
+import { espiga } from './espiga';
+import { trenzado } from './trenzado';
+import { mosaico } from './mosaico';
+import { cruceta } from './cruceta';
+import { radial } from './radial';
+import { guiones } from './guiones';
+import { sierra } from './sierra';
+import { escalonado } from './escalonado';
+import { diamante } from './diamante';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
@@ -67,4 +77,6 @@ export const VARIANTS: Record<VariantName, Variant> = {
   damero, subdivision,
   pixeles, terrazas, voxel,
   cintas, rejas,
+  laberinto, espiga, trenzado, mosaico, cruceta,
+  radial, guiones, sierra, escalonado, diamante,
 };
