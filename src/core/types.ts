@@ -14,6 +14,8 @@ export const PATTERN_NAMES = [
   // familia 3D: cámara axonométrica compartida (core/iso.ts), cubos de aristas abiertas
   'bloques', 'torres', 'barras', 'escaleras', 'pozos',
   'placas', 'rayado', 'nidos', 'prismas', 'capas', 'circuito',
+  // familia de malla: tejido continuo de barras finas con el nudo abierto
+  'ladrillo', 'celdilla', 'arcos', 'tresejes', 'nodos',
 ] as const;
 
 export const VARIANT_NAMES = [...LINE_NAMES, ...PATTERN_NAMES] as const;

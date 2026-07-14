@@ -21,7 +21,7 @@ export const mallax: Variant = {
       const cy = H / 2 + rx * si + ry * co;
       const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.28, freq: 1.0 });
       const arm = cell * 0.5 * b.scale; // media celda: los brazos se juntan con los del vecino
-      const w = cell * 0.04 * (1 + 0.5 * b.w);
+      const w = cell * 0.016 * (1 + 0.5 * b.w); // trazo fino: la malla se lee como dibujo, no como barra
 
       // aspa hacia los cuatro vecinos ortogonales del marco girado → malla continua
       for (const a of [0, Math.PI / 2]) {

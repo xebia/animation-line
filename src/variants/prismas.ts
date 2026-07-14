@@ -7,8 +7,8 @@ import type { Cam } from '../core/iso';
 export const prismas: Variant = {
   name: 'prismas',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const S = Math.min(W, H) / (lineCount ?? 6);
-    const cam: Cam = { ang: 0.3 + t * 0.00016, k: 0.5, S, W, H };
+    const S = Math.min(W, H) / (lineCount ?? 3.6); // celdas grandes: el panal se lee
+    const cam: Cam = { ang: Math.PI / 4, k: 0.5, S, W, H }; // isometría fija
     const out: Polyline[] = [];
     const R = 0.56; // radio del hexágono: las celdas se tocan lado con lado
 

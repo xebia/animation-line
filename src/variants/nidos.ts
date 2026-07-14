@@ -2,15 +2,15 @@ import type { Variant, Polyline, VariantEnv } from '../core/types';
 import { cube, lattice, wave, grad } from '../core/iso';
 import type { Cam } from '../core/iso';
 
-const SHELLS = 3;
+const SHELLS = 2;
 
 /** Nidos: cubos dentro de cubos. Las capas laten con retardo unas respecto a otras, así que
  *  el cubo interior asoma y se vuelve a meter — una caja que se abre sin abrirse. */
 export const nidos: Variant = {
   name: 'nidos',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const S = Math.min(W, H) / (lineCount ?? 5);
-    const cam: Cam = { ang: 0.5 + t * 0.00025, k: 0.5, S, W, H };
+    const S = Math.min(W, H) / (lineCount ?? 3);   // pocas cajas, grandes
+    const cam: Cam = { ang: Math.PI / 4, k: 0.5, S, W, H }; // isometría fija: geometría limpia
     const out: Polyline[] = [];
 
     for (const n of lattice(cam, 1)) {

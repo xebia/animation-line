@@ -2,15 +2,16 @@ import type { Variant, Polyline, VariantEnv } from '../core/types';
 import { cube, project, lattice, wave, grad } from '../core/iso';
 import type { Cam } from '../core/iso';
 
-const HATCH = 5; // líneas de rayado por cara
+const HATCH = 3; // líneas de rayado por cara: pocas, si no la cara se emborrona
 
 /** Rayado: cubos cuya cara superior va sombreada a rayas, como un grabado técnico. La
  *  densidad del rayado la marca la onda: las caras se oscurecen y se aclaran por zonas. */
 export const rayado: Variant = {
   name: 'rayado',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const S = Math.min(W, H) / (lineCount ?? 6);
-    const cam: Cam = { ang: 0.45 + t * 0.00015, k: 0.5, S, W, H };
+    const S = Math.min(W, H) / (lineCount ?? 3.4); // cubos grandes: pocos y legibles
+    // isometría exacta y fija: el teselado queda regular; lo que se mueve es el sombreado
+    const cam: Cam = { ang: Math.PI / 4, k: 0.5, S, W, H };
     const out: Polyline[] = [];
     const s0 = 0.4;
 
