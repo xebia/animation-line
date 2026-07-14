@@ -7,14 +7,14 @@ import { hexTiles, breathe } from '../core/tiling';
 export const teselas: Variant = {
   name: 'teselas',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const cell = Math.max(W, H) / (lineCount ?? 11);
+    const cell = Math.max(W, H) / (lineCount ?? 16);
     const out: Polyline[] = [];
 
     for (const tile of hexTiles(W, H, cell)) {
       const { cx, cy } = tile;
-      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.22, rotAmp: 0.35, freq: 1.2 });
+      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.26, rotAmp: 0.5, freq: 1.2 });
       const flip = (tile.i + tile.j) & 1 ? Math.PI / 3 : 0; // Y hacia arriba / hacia abajo
-      const spread = (Math.PI * 2) / 3 + 0.28 * b.w;        // los brazos se abren y cierran
+      const spread = (Math.PI * 2) / 3 + 0.38 * b.w;        // los brazos se abren y cierran
       const arm = cell * 0.44 * b.scale;
       // el hueco central separa los brazos del nodo → estrella abierta, no aspa maciza
       const gap = cell * 0.06 * (1 - 0.5 * b.w);
@@ -25,7 +25,7 @@ export const teselas: Variant = {
         out.push({
           pts: [cx + ux * gap, cy + uy * gap, cx + ux * arm, cy + uy * arm],
           s: b.s,
-          w: 1.8,
+          w: 1.3,
         });
       }
     }

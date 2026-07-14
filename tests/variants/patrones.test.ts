@@ -30,7 +30,7 @@ describe.each(PATRONES)('$name', (variant) => {
 describe('cruces', () => {
   it('mezcla la rejilla fina con las cruces gruesas', () => {
     const widths = cruces.generate(ENV).map((p) => p.w!);
-    expect(Math.min(...widths)).toBeLessThan(1); // rejilla técnica
-    expect(Math.max(...widths)).toBeGreaterThan(4); // cruz
+    // lo que define la variante es el contraste de peso, no un grosor concreto
+    expect(Math.max(...widths)).toBeGreaterThan(3 * Math.min(...widths));
   });
 });

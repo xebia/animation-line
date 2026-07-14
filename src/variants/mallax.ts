@@ -7,9 +7,9 @@ import { squareTiles, breathe } from '../core/tiling';
 export const mallax: Variant = {
   name: 'mallax',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const cell = Math.max(W, H) / (lineCount ?? 5);
+    const cell = Math.max(W, H) / (lineCount ?? 11);
     const D = Math.hypot(W, H); // el campo girado tiene que cubrir la diagonal
-    const tilt = 0.35 + 0.06 * Math.sin(t * 0.00018); // la malla deriva muy despacio
+    const tilt = 0.35 + 0.1 * Math.sin(t * 0.0004); // la malla entera cabecea
     const co = Math.cos(tilt), si = Math.sin(tilt);
     const ox = (W - D) / 2, oy = (H - D) / 2;
     const out: Polyline[] = [];
@@ -19,9 +19,9 @@ export const mallax: Variant = {
       const rx = tile.cx + ox - W / 2, ry = tile.cy + oy - H / 2;
       const cx = W / 2 + rx * co - ry * si;
       const cy = H / 2 + rx * si + ry * co;
-      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.12, freq: 1.0, speed: 0.0005 });
+      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.16, freq: 1.0 });
       const arm = cell * 0.5 * b.scale; // media celda: los brazos se juntan con los del vecino
-      const w = cell * 0.1 * (1 + 0.45 * b.w);
+      const w = cell * 0.04 * (1 + 0.5 * b.w);
 
       // aspa hacia los cuatro vecinos ortogonales del marco girado → malla continua
       for (const a of [0, Math.PI / 2]) {

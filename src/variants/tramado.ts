@@ -7,11 +7,11 @@ import { squareTiles, breathe } from '../core/tiling';
 export const tramado: Variant = {
   name: 'tramado',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const cell = Math.max(W, H) / (lineCount ?? 12);
+    const cell = Math.max(W, H) / (lineCount ?? 20);
     const out: Polyline[] = [];
 
     for (const { cx, cy } of squareTiles(W, H, cell)) {
-      const b = breathe(cx, cy, t, W, H, { rotAmp: 0.28, scaleAmp: 0.3, freq: 1.1 });
+      const b = breathe(cx, cy, t, W, H, { rotAmp: 0.34, scaleAmp: 0.36, freq: 1.1 });
       const r = cell * 0.5;                 // media diagonal del rombo
       const len = r * 1.414 * 0.72 * b.scale; // lado del rombo, recortado → esquinas abiertas
 
@@ -24,7 +24,7 @@ export const tramado: Variant = {
           out.push({
             pts: [mx - dx, my - dy, mx + dx, my + dy],
             s: b.s,
-            w: 1.5 + 1.1 * (0.5 + 0.5 * b.w),
+            w: 1.1 + 0.7 * (0.5 + 0.5 * b.w),
           });
         }
       }

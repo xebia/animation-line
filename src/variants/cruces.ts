@@ -7,7 +7,7 @@ import { squareTiles, breathe } from '../core/tiling';
 export const cruces: Variant = {
   name: 'cruces',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const cell = Math.max(W, H) / (lineCount ?? 7);
+    const cell = Math.max(W, H) / (lineCount ?? 15);
     const out: Polyline[] = [];
 
     // Rejilla técnica de fondo: trazo casi invisible, dos pasos (celda y sub-celda)
@@ -24,11 +24,12 @@ export const cruces: Variant = {
     // Cruces
     for (const { cx, cy } of squareTiles(W, H, cell)) {
       // giro corto: la cruz cabecea pero nunca deja de leerse como cruz recta
-      const b = breathe(cx, cy, t, W, H, { rotAmp: 0.22, scaleAmp: 0.3 });
-      const arm = cell * 0.2 * (1.15 - 0.3 * b.w); // en la cresta el brazo se acorta…
-      const w = cell * 0.05 * (1 + 0.9 * b.w);     // …y engorda: se lee como estrella
+      const b = breathe(cx, cy, t, W, H, { rotAmp: 0.3, scaleAmp: 0.34, moveAmp: cell * 0.05 });
+      const arm = cell * 0.22 * (1.15 - 0.3 * b.w); // en la cresta el brazo se acorta…
+      const w = cell * 0.028 * (1 + 0.9 * b.w);     // …y engorda: se lee como estrella
       const co = Math.cos(b.rot), si = Math.sin(b.rot);
-      const px = (ax: number, ay: number) => [cx + ax * co - ay * si, cy + ax * si + ay * co];
+      const px = (ax: number, ay: number) =>
+        [cx + b.dx + ax * co - ay * si, cy + b.dy + ax * si + ay * co];
       const [h1x, h1y] = px(-arm, 0), [h2x, h2y] = px(arm, 0);
       const [v1x, v1y] = px(0, -arm), [v2x, v2y] = px(0, arm);
       out.push({ pts: [h1x, h1y, h2x, h2y], s: b.s, w });

@@ -1,13 +1,20 @@
-export const VARIANT_NAMES = [
+/** Campos de líneas: la forma nace de un haz de líneas que recorre el lienzo. */
+export const LINE_NAMES = [
   'oscilacion', 'onda', 'interferencia', 'malla', 'rejilla',
   'pliegues', 'cubo', 'flujo', 'entrelazado', 'espiral',
   'tubo', 'cono', 'cinta', 'helice', 'embudo', 'duna',
   'quilla', 'helicoide', 'voluta', 'celosia',
   'aurora', 'moire', 'tunel', 'terreno', 'orbitas', 'pulso',
   'giroscopio', 'toroide', 'cristal', 'frunce', 'dipolo',
-  'cruces', 'tramado', 'mallax', 'panal', 'teselas',
 ] as const;
 
+/** Tramas: una forma se repite en una rejilla que cubre el lienzo y respira. */
+export const PATTERN_NAMES = ['cruces', 'tramado', 'mallax', 'panal', 'teselas'] as const;
+
+export const VARIANT_NAMES = [...LINE_NAMES, ...PATTERN_NAMES] as const;
+
+export type LineName = (typeof LINE_NAMES)[number];
+export type PatternName = (typeof PATTERN_NAMES)[number];
 export type VariantName = (typeof VARIANT_NAMES)[number];
 
 export type Background =

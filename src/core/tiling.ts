@@ -60,7 +60,7 @@ export function breathe(
   cx: number, cy: number, t: number, W: number, H: number, o: BreatheOpts = {},
 ): Breath {
   const freq = o.freq ?? 1.4;
-  const speed = o.speed ?? 0.0006;
+  const speed = o.speed ?? 0.0011;
   const angle = o.angle ?? 0.6;
   const u = cx / W, v = cy / H;
   const p = u * Math.cos(angle) + v * Math.sin(angle);
