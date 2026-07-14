@@ -36,6 +36,24 @@ export function hexTiles(W: number, H: number, cell: number): Tile[] {
   return out;
 }
 
+/** Lados de un polígono cerrado, cada uno acortado `gap` px por cada extremo: la figura se
+ *  lee entera pero los vértices quedan abiertos, que es lo que hace que la trama respire
+ *  sin encerrarse. `verts` = [x0,y0, x1,y1, …] sin repetir el primer vértice. */
+export function openSides(verts: number[], gap: number): number[][] {
+  const n = verts.length / 2;
+  const sides: number[][] = [];
+  for (let i = 0; i < n; i++) {
+    const ax = verts[i * 2], ay = verts[i * 2 + 1];
+    const j = (i + 1) % n;
+    const bx = verts[j * 2], by = verts[j * 2 + 1];
+    const len = Math.hypot(bx - ax, by - ay) || 1;
+    const g = Math.min(gap, len * 0.45); // nunca comerse el lado entero
+    const ux = ((bx - ax) / len) * g, uy = ((by - ay) / len) * g;
+    sides.push([ax + ux, ay + uy, bx - ux, by - uy]);
+  }
+  return sides;
+}
+
 export interface BreatheOpts {
   freq?: number;     // ondas por lienzo
   speed?: number;    // velocidad de avance de la onda
@@ -60,7 +78,7 @@ export function breathe(
   cx: number, cy: number, t: number, W: number, H: number, o: BreatheOpts = {},
 ): Breath {
   const freq = o.freq ?? 1.4;
-  const speed = o.speed ?? 0.0011;
+  const speed = o.speed ?? 0.0024;
   const angle = o.angle ?? 0.6;
   const u = cx / W, v = cy / H;
   const p = u * Math.cos(angle) + v * Math.sin(angle);

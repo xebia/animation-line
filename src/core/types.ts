@@ -9,7 +9,7 @@ export const LINE_NAMES = [
 ] as const;
 
 /** Tramas: una forma se repite en una rejilla que cubre el lienzo y respira. */
-export const PATTERN_NAMES = ['cruces', 'tramado', 'mallax', 'panal', 'teselas'] as const;
+export const PATTERN_NAMES = ['tramado', 'mallax', 'teselas', 'extrusion'] as const;
 
 export const VARIANT_NAMES = [...LINE_NAMES, ...PATTERN_NAMES] as const;
 

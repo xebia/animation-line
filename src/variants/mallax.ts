@@ -9,7 +9,7 @@ export const mallax: Variant = {
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
     const cell = Math.max(W, H) / (lineCount ?? 11);
     const D = Math.hypot(W, H); // el campo girado tiene que cubrir la diagonal
-    const tilt = 0.35 + 0.1 * Math.sin(t * 0.0004); // la malla entera cabecea
+    const tilt = 0.35 + 0.22 * Math.sin(t * 0.0009); // la malla entera cabecea
     const co = Math.cos(tilt), si = Math.sin(tilt);
     const ox = (W - D) / 2, oy = (H - D) / 2;
     const out: Polyline[] = [];
@@ -19,7 +19,7 @@ export const mallax: Variant = {
       const rx = tile.cx + ox - W / 2, ry = tile.cy + oy - H / 2;
       const cx = W / 2 + rx * co - ry * si;
       const cy = H / 2 + rx * si + ry * co;
-      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.16, freq: 1.0 });
+      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.28, freq: 1.0 });
       const arm = cell * 0.5 * b.scale; // media celda: los brazos se juntan con los del vecino
       const w = cell * 0.04 * (1 + 0.5 * b.w);
 

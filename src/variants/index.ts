@@ -30,16 +30,15 @@ import { toroide } from './toroide';
 import { cristal } from './cristal';
 import { frunce } from './frunce';
 import { dipolo } from './dipolo';
-import { cruces } from './cruces';
 import { tramado } from './tramado';
 import { mallax } from './mallax';
-import { panal } from './panal';
 import { teselas } from './teselas';
+import { extrusion } from './extrusion';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
   flujo, entrelazado, espiral, tubo, cono, cinta, helice, embudo, duna,
   quilla, helicoide, voluta, celosia, aurora, moire,
   tunel, terreno, orbitas, pulso, giroscopio, toroide, cristal, frunce, dipolo,
-  cruces, tramado, mallax, panal, teselas,
+  tramado, mallax, teselas, extrusion,
 };
