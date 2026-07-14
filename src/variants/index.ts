@@ -55,7 +55,6 @@ import { voxel } from './voxel';
 import { acordeon } from './acordeon';
 import { cintas } from './cintas';
 import { rejas } from './rejas';
-import { teclas } from './teclas';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
@@ -68,5 +67,5 @@ export const VARIANTS: Record<VariantName, Variant> = {
   celdilla, nodos,
   damero, subdivision,
   pixeles, terrazas, voxel,
-  acordeon, cintas, rejas, teclas,
+  acordeon, cintas, rejas,
 };
