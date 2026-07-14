@@ -73,6 +73,12 @@ import { puntadas } from './puntadas';
 import { listones } from './listones';
 import { semis } from './semis';
 import { tejido } from './tejido';
+import { mimbre } from './mimbre';
+import { triaxial } from './triaxial';
+import { enrejado } from './enrejado';
+import { redondeada } from './redondeada';
+import { hexmalla } from './hexmalla';
+import { sarga } from './sarga';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
@@ -90,4 +96,5 @@ export const VARIANTS: Record<VariantName, Variant> = {
   guiones, escalonado, diamante,
   aspas, cuadrados, hexagonos, triangulos, ganchos,
   flechas, puntadas, listones, semis, tejido,
+  mimbre, triaxial, enrejado, redondeada, hexmalla, sarga,
 };

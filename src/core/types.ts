@@ -26,6 +26,8 @@ export const PATTERN_NAMES = [
   // teselados de trazos cortos y nudo abierto, en la línea de tramado y teselas
   'aspas', 'cuadrados', 'hexagonos', 'triangulos', 'ganchos',
   'flechas', 'puntadas', 'listones', 'semis', 'tejido',
+  // mallas continuas y entrelazados, en la línea de tejido y mallax
+  'mimbre', 'triaxial', 'enrejado', 'redondeada', 'hexmalla', 'sarga',
 ] as const;
 
 export const VARIANT_NAMES = [...LINE_NAMES, ...PATTERN_NAMES] as const;
