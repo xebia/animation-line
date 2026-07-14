@@ -47,9 +47,15 @@ import { capas } from './capas';
 import { circuito } from './circuito';
 import { celdilla } from './celdilla';
 import { nodos } from './nodos';
-import { greca } from './greca';
 import { damero } from './damero';
 import { subdivision } from './subdivision';
+import { pixeles } from './pixeles';
+import { terrazas } from './terrazas';
+import { voxel } from './voxel';
+import { acordeon } from './acordeon';
+import { cintas } from './cintas';
+import { rejas } from './rejas';
+import { teclas } from './teclas';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
@@ -60,5 +66,7 @@ export const VARIANTS: Record<VariantName, Variant> = {
   bloques, torres, barras, escaleras, pozos,
   placas, rayado, nidos, prismas, capas, circuito,
   celdilla, nodos,
-  greca, damero, subdivision,
+  damero, subdivision,
+  pixeles, terrazas, voxel,
+  acordeon, cintas, rejas, teclas,
 };
