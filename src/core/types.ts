@@ -19,7 +19,7 @@ export const PATTERN_NAMES = [
   // teselados estrictos: ángulos exactos, giros a saltos de 45°/90°
   'damero', 'subdivision',
   'pixeles', 'terrazas', 'voxel',
-  'acordeon', 'cintas', 'rejas',
+  'cintas', 'rejas',
 ] as const;
 
 export const VARIANT_NAMES = [...LINE_NAMES, ...PATTERN_NAMES] as const;

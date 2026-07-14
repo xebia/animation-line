@@ -52,7 +52,6 @@ import { subdivision } from './subdivision';
 import { pixeles } from './pixeles';
 import { terrazas } from './terrazas';
 import { voxel } from './voxel';
-import { acordeon } from './acordeon';
 import { cintas } from './cintas';
 import { rejas } from './rejas';
 
@@ -67,5 +66,5 @@ export const VARIANTS: Record<VariantName, Variant> = {
   celdilla, nodos,
   damero, subdivision,
   pixeles, terrazas, voxel,
-  acordeon, cintas, rejas,
+  cintas, rejas,
 };
