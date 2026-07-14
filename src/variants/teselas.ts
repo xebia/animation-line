@@ -29,7 +29,7 @@ export const teselas: Variant = {
         out.push({
           pts: [cx + ux * gap, cy + uy * gap, cx + ux * reach, cy + uy * reach],
           s: b.s,
-          w: 1.4 + 0.9 * (0.5 + 0.5 * b.w),
+          w: 0.9 + 0.5 * (0.5 + 0.5 * b.w), // muy fino, como la referencia
         });
       }
     }

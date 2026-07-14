@@ -25,7 +25,7 @@ export const tramado: Variant = {
           out.push({
             pts: [mx - dx, my - dy, mx + dx, my + dy],
             s: b.s,
-            w: 1.1 + 0.7 * (0.5 + 0.5 * b.w),
+            w: 0.9 + 0.5 * (0.5 + 0.5 * b.w), // muy fino, como la referencia
           });
         }
       }
