@@ -15,7 +15,7 @@ export const PATTERN_NAMES = [
   'bloques', 'torres', 'barras', 'escaleras', 'pozos',
   'placas', 'rayado', 'nidos', 'prismas', 'capas', 'circuito',
   // familia de malla: tejido continuo de barras finas con el nudo abierto
-  'ladrillo', 'celdilla', 'arcos', 'tresejes', 'nodos',
+  'ladrillo', 'celdilla', 'nodos',
 ] as const;
 
 export const VARIANT_NAMES = [...LINE_NAMES, ...PATTERN_NAMES] as const;

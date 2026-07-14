@@ -47,8 +47,6 @@ import { capas } from './capas';
 import { circuito } from './circuito';
 import { ladrillo } from './ladrillo';
 import { celdilla } from './celdilla';
-import { arcos } from './arcos';
-import { tresejes } from './tresejes';
 import { nodos } from './nodos';
 
 export const VARIANTS: Record<VariantName, Variant> = {
@@ -59,5 +57,5 @@ export const VARIANTS: Record<VariantName, Variant> = {
   tramado, mallax, teselas, extrusion,
   bloques, torres, barras, escaleras, pozos,
   placas, rayado, nidos, prismas, capas, circuito,
-  ladrillo, celdilla, arcos, tresejes, nodos,
+  ladrillo, celdilla, nodos,
 };
