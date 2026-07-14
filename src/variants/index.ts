@@ -34,6 +34,17 @@ import { tramado } from './tramado';
 import { mallax } from './mallax';
 import { teselas } from './teselas';
 import { extrusion } from './extrusion';
+import { bloques } from './bloques';
+import { torres } from './torres';
+import { barras } from './barras';
+import { escaleras } from './escaleras';
+import { pozos } from './pozos';
+import { placas } from './placas';
+import { rayado } from './rayado';
+import { nidos } from './nidos';
+import { prismas } from './prismas';
+import { capas } from './capas';
+import { circuito } from './circuito';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
@@ -41,4 +52,6 @@ export const VARIANTS: Record<VariantName, Variant> = {
   quilla, helicoide, voluta, celosia, aurora, moire,
   tunel, terreno, orbitas, pulso, giroscopio, toroide, cristal, frunce, dipolo,
   tramado, mallax, teselas, extrusion,
+  bloques, torres, barras, escaleras, pozos,
+  placas, rayado, nidos, prismas, capas, circuito,
 };
