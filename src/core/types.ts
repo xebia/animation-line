@@ -17,7 +17,7 @@ export const PATTERN_NAMES = [
   // familia de malla: tejido continuo de barras finas con el nudo abierto
   'ladrillo', 'celdilla', 'nodos',
   // teselados estrictos: ángulos exactos, giros a saltos de 45°/90°
-  'octagonos', 'greca', 'estrellas', 'damero', 'subdivision',
+  'greca', 'damero', 'subdivision',
 ] as const;
 
 export const VARIANT_NAMES = [...LINE_NAMES, ...PATTERN_NAMES] as const;
