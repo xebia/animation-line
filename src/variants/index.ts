@@ -60,9 +60,7 @@ import { espiga } from './espiga';
 import { trenzado } from './trenzado';
 import { mosaico } from './mosaico';
 import { cruceta } from './cruceta';
-import { radial } from './radial';
 import { guiones } from './guiones';
-import { sierra } from './sierra';
 import { escalonado } from './escalonado';
 import { diamante } from './diamante';
 
@@ -79,5 +77,5 @@ export const VARIANTS: Record<VariantName, Variant> = {
   pixeles, terrazas, voxel,
   cintas, rejas,
   laberinto, espiga, trenzado, mosaico, cruceta,
-  radial, guiones, sierra, escalonado, diamante,
+  guiones, escalonado, diamante,
 };
