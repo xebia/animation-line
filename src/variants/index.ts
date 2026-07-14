@@ -63,6 +63,16 @@ import { cruceta } from './cruceta';
 import { guiones } from './guiones';
 import { escalonado } from './escalonado';
 import { diamante } from './diamante';
+import { aspas } from './aspas';
+import { cuadrados } from './cuadrados';
+import { hexagonos } from './hexagonos';
+import { triangulos } from './triangulos';
+import { ganchos } from './ganchos';
+import { flechas } from './flechas';
+import { puntadas } from './puntadas';
+import { listones } from './listones';
+import { semis } from './semis';
+import { tejido } from './tejido';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
@@ -78,4 +88,6 @@ export const VARIANTS: Record<VariantName, Variant> = {
   cintas, rejas,
   laberinto, espiga, trenzado, mosaico, cruceta,
   guiones, escalonado, diamante,
+  aspas, cuadrados, hexagonos, triangulos, ganchos,
+  flechas, puntadas, listones, semis, tejido,
 };

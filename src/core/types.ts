@@ -23,6 +23,9 @@ export const PATTERN_NAMES = [
   // teselados planos de trazo fino, en la línea de las primeras
   'laberinto', 'espiga', 'trenzado', 'mosaico', 'cruceta',
   'guiones', 'escalonado', 'diamante',
+  // teselados de trazos cortos y nudo abierto, en la línea de tramado y teselas
+  'aspas', 'cuadrados', 'hexagonos', 'triangulos', 'ganchos',
+  'flechas', 'puntadas', 'listones', 'semis', 'tejido',
 ] as const;
 
 export const VARIANT_NAMES = [...LINE_NAMES, ...PATTERN_NAMES] as const;
