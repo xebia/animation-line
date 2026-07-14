@@ -2,6 +2,8 @@
 // con etiquetas conceptuales de tecnología/datos (Data & AI).
 import { POINTS, makeCol, PALETTES, BACKGROUNDS, paintBg } from './points';
 import type { PBg } from './points';
+import { pointsToSvg } from './svg-points';
+import { downloadText, svgButton } from './download';
 
 const LABELS: Record<string, string> = {
   pondas: 'Flujo de datos', pcresta: 'Pico de carga', premolino: 'Turbulencia',
@@ -65,7 +67,15 @@ Object.keys(POINTS).forEach((name) => {
   const card = document.createElement('div'); card.className = 'card';
   const cv = document.createElement('canvas');
   const lb = document.createElement('span'); lb.className = 'label'; lb.textContent = LABELS[name] ?? name;
-  card.append(cv, lb); grid.appendChild(card);
+  // SVG: se vuelve a ejecutar la animación sobre un contexto que anota lo que dibuja,
+  // en el mismo instante que se está viendo, y se vuelca a vectores.
+  const dl = svgButton(() => {
+    const r = cv.getBoundingClientRect();
+    const W = Math.round(r.width), H = Math.round(r.height);
+    const svg = pointsToSvg(POINTS[name], W, H, performance.now() * 0.55, makeCol(PAL), BG);
+    downloadText(`${name}.svg`, svg);
+  });
+  card.append(cv, lb, dl); grid.appendChild(card);
   const slot: Slot = { cv, ctx: cv.getContext('2d')!, fn: POINTS[name], w: 1, h: 1, running: false, raf: 0 };
   slots.push(slot);
   io.observe(cv);

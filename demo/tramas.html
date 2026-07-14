@@ -20,6 +20,9 @@
   .card{position:relative;aspect-ratio:16/9;overflow:hidden;background:#06101a;}
   .card .stage{position:absolute;inset:0;}
   .card .label{position:absolute;left:16px;top:14px;z-index:2;font-size:12px;letter-spacing:.09em;text-transform:uppercase;opacity:.9;text-shadow:0 1px 6px #000a;}
+  .card .dl{position:absolute;right:14px;top:12px;z-index:3;font-size:11px;letter-spacing:.06em;padding:5px 10px;border-radius:99px;cursor:pointer;color:#fff;background:#0009;border:1px solid #ffffff44;backdrop-filter:blur(4px);opacity:0;transition:opacity .15s;}
+  .card:hover .dl,.card .dl:focus{opacity:1;}
+  .card .dl:hover{background:#fff;color:#0a1a24;border-color:#fff;}
   @media (max-width:900px){ #grid{padding:28px 16px;gap:36px;} }
 </style></head>
 <body>

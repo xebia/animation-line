@@ -17,6 +17,8 @@ function buildWordCard([word, estilo]: [string, EstiloLineas]): void {
   const label = document.createElement('span');
   label.className = 'label';
   label.textContent = word + ' · ' + estilo;
+  // Sin botón de SVG: la palabra se compone en un canvas aparte con una máscara de texto,
+  // así que no se puede grabar como vectores sin exportar además un clipPath con el texto.
   card.append(cv, label);
   grid.appendChild(card);
   const ctx = cv.getContext('2d')!;

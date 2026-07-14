@@ -1,6 +1,7 @@
 // Grid de variantes con selector de paleta y de fondo, compartido por /lineas y /tramas.
-import { LineField } from '../src/index';
+import { LineField, VARIANTS, polylinesToSvg } from '../src/index';
 import type { Background, LineFieldOptions, VariantName } from '../src/index';
+import { downloadText, svgButton } from './download';
 
 // Mismo orden de paletas y fondos que en /puntos
 export const PALETTES = [
@@ -20,7 +21,8 @@ export const UI_BACKGROUNDS: { name: string; bg: Background; css: string }[] = [
   { name: 'Lavanda', bg: { type: 'gradient', from: '#eef0ff', to: '#dfeaff' }, css: 'linear-gradient(135deg,#eef0ff,#dfeaff)' },
 ];
 
-const START = 1; // paleta y fondo iniciales
+const START = 1;     // paleta y fondo iniciales
+const SPEED = 0.35;  // el mismo speed por defecto que usa LineField, para que el SVG cuadre
 
 interface Slot { el: HTMLElement; opts: LineFieldOptions; field: LineField | null; }
 
@@ -68,7 +70,23 @@ export function mountVariantGrid(
     const label = document.createElement('span');
     label.className = 'label';
     label.textContent = name;
-    card.append(stage, label);
+
+    // SVG: se congela el fotograma actual regenerando la geometría de la variante en ese t,
+    // con la misma paleta y fondo que la card. Sale vectorial y sin animación.
+    const dl = svgButton(() => {
+      const r = stage.getBoundingClientRect();
+      const W = Math.round(r.width), H = Math.round(r.height);
+      const t = performance.now() * SPEED;
+      const svg = polylinesToSvg(VARIANTS[name].generate({ t, W, H }), {
+        W, H,
+        palette: state.palette,
+        background: UI_BACKGROUNDS[state.bgIndex].bg,
+        thickness: opts.thickness ?? 1.1,
+      });
+      downloadText(`${name}.svg`, svg);
+    });
+
+    card.append(stage, label, dl);
     grid.appendChild(card);
     const slot: Slot = {
       el: stage,
