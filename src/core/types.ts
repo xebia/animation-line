@@ -5,6 +5,7 @@ export const VARIANT_NAMES = [
   'quilla', 'helicoide', 'voluta', 'celosia',
   'aurora', 'moire', 'tunel', 'terreno', 'orbitas', 'pulso',
   'giroscopio', 'toroide', 'cristal', 'frunce', 'dipolo',
+  'cruces', 'tramado', 'mallax', 'panal', 'teselas',
 ] as const;
 
 export type VariantName = (typeof VARIANT_NAMES)[number];
@@ -26,8 +27,9 @@ export interface LineFieldOptions {
 }
 
 /** Pixel-space polyline: pts = [x0,y0, x1,y1, ...] in [0,W]×[0,H], y-down.
- *  a: alfa opcional 0–1 (fade de profundidad en variantes 3D), default 1. */
-export interface Polyline { pts: number[]; s: number; a?: number; }
+ *  a: alfa opcional 0–1 (fade de profundidad en variantes 3D), default 1.
+ *  w: grosor opcional en px de este trazo; sin él, el thickness de la instancia. */
+export interface Polyline { pts: number[]; s: number; a?: number; w?: number; }
 
 export interface VariantEnv { t: number; W: number; H: number; lineCount?: number; }
 

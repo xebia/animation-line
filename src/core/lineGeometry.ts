@@ -3,7 +3,7 @@ import type { Polyline } from './types';
 export interface SegmentOpts {
   zoom?: number;
   pan?: { x: number; y: number };
-  thickness?: number; // grosor de línea en px
+  thickness?: number; // grosor de línea en px (default de la instancia)
 }
 
 export interface SegmentBuffers {
@@ -11,6 +11,7 @@ export interface SegmentBuffers {
   s: Float32Array;        // coordenada de gradiente, 1 por vértice
   edge: Float32Array;     // -1..1 a lo ancho de la línea (feather en shader)
   a: Float32Array;        // alfa por polilínea (fade de profundidad)
+  hw: Float32Array;       // media-anchura en px por polilínea (feather en shader)
 }
 
 /** Media-anchura real de la línea en px: grosor/2 + margen de feather. */
@@ -25,6 +26,8 @@ const COLLINEAR = 0.99;
 /**
  * Expande polilíneas (en px) a triángulos en clip space, con grosor real.
  * zoom/pan se aplican aquí (CPU) para que el grosor sea constante en px.
+ * Cada polilínea puede llevar su propio grosor (`w`); sin él usa el de la
+ * instancia, así que una misma variante mezcla trazos finos y gruesos.
  * Cada segmento → quad (2 triángulos, 6 vértices) con atributo edge ±1;
  * en cada vértice interior con giro apreciable se añade un abanico (round
  * join) en el lado exterior del giro, y en los extremos un remate
@@ -37,20 +40,24 @@ export function polylinesToSegments(
   const zoom = opts.zoom ?? 1;
   const panX = opts.pan?.x ?? 0;
   const panY = opts.pan?.y ?? 0;
-  const hw = halfWidthPx(opts.thickness ?? 1.5); // media-anchura en px
+  const defaultHw = halfWidthPx(opts.thickness ?? 1.5);
   const toClipX = (px: number) => ((px / W) * 2 - 1) * zoom + panX;
   const toClipY = (py: number) => (1 - (py / H) * 2) * zoom + panY;
   const pos: number[] = [];
   const ss: number[] = [];
   const ee: number[] = [];
   const aa: number[] = [];
+  const hh: number[] = [];
 
   for (const pl of polylines) {
     const alpha = pl.a ?? 1;
+    const hw = pl.w === undefined ? defaultHw : halfWidthPx(pl.w); // media-anchura de esta polilínea
     const p = pl.pts;
     const n = p.length / 2;
     if (n < 2) continue;
-    const meta = (count: number) => { for (let k = 0; k < count; k++) { ss.push(pl.s); aa.push(alpha); } };
+    const meta = (count: number) => {
+      for (let k = 0; k < count; k++) { ss.push(pl.s); aa.push(alpha); hh.push(hw); }
+    };
 
     // Abanico alrededor de (cx,cy) entre los ángulos a1→a2 por el camino corto (px space)
     const fan = (cx: number, cy: number, a1: number, a2: number) => {
@@ -113,5 +120,6 @@ export function polylinesToSegments(
     s: new Float32Array(ss),
     edge: new Float32Array(ee),
     a: new Float32Array(aa),
+    hw: new Float32Array(hh),
   };
 }

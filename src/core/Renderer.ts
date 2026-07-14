@@ -3,31 +3,33 @@ import type { OGLRenderingContext } from 'ogl';
 import type { Polyline } from './types';
 import type { ResolvedBackground } from './background';
 import { buildGradientPixels } from './palette';
-import { polylinesToSegments, halfWidthPx } from './lineGeometry';
+import { polylinesToSegments } from './lineGeometry';
 
 const VERT = `
 attribute vec2 position;
 attribute float s;
 attribute float edge;
 attribute float a;
+attribute float hw;
 varying float vS;
 varying float vEdge;
 varying float vA;
-void main() { vS = s; vEdge = edge; vA = a; gl_Position = vec4(position, 0.0, 1.0); }
+varying float vHalf;
+void main() { vS = s; vEdge = edge; vA = a; vHalf = hw; gl_Position = vec4(position, 0.0, 1.0); }
 `;
 
 const FRAG = `
 precision highp float;
 uniform sampler2D uGradient;
 uniform float uAlpha;
-uniform float uHalf;    // media-anchura de línea en px
 uniform float uPremult; // 1 en blend multiply (fondo claro)
 varying float vS;
 varying float vEdge;
 varying float vA;
+varying float vHalf;    // media-anchura de esta línea en px
 void main() {
   vec3 c = texture2D(uGradient, vec2(vS, 0.5)).rgb;
-  float feather = clamp((1.0 - abs(vEdge)) * uHalf / 0.75, 0.0, 1.0);
+  float feather = clamp((1.0 - abs(vEdge)) * vHalf / 0.75, 0.0, 1.0);
   float al = uAlpha * vA * feather;
   gl_FragColor = vec4(mix(c, c * al, uPremult), al);
 }
@@ -79,8 +81,7 @@ export class Renderer {
     this.program = new Program(this.gl, {
       vertex: VERT, fragment: FRAG, transparent: true, cullFace: false, depthTest: false,
       uniforms: {
-        uGradient: { value: this.gradient }, uAlpha: { value: 0.85 },
-        uHalf: { value: halfWidthPx(this.thickness) }, uPremult: { value: 0 },
+        uGradient: { value: this.gradient }, uAlpha: { value: 0.85 }, uPremult: { value: 0 },
       },
     });
     this.geometry = this.makeGeometry(0);
@@ -109,6 +110,7 @@ export class Renderer {
       s: { size: 1, data: new Float32Array(vertices), usage: gl.DYNAMIC_DRAW },
       edge: { size: 1, data: new Float32Array(vertices), usage: gl.DYNAMIC_DRAW },
       a: { size: 1, data: new Float32Array(vertices), usage: gl.DYNAMIC_DRAW },
+      hw: { size: 1, data: new Float32Array(vertices), usage: gl.DYNAMIC_DRAW },
     });
   }
 
@@ -134,7 +136,6 @@ export class Renderer {
   setPan(x: number, y: number): void { this.pan = { x, y }; }
   setThickness(t: number): void {
     this.thickness = t;
-    this.program.uniforms.uHalf.value = halfWidthPx(t);
   }
 
   resize(): void {
@@ -163,7 +164,9 @@ export class Renderer {
       this.mesh.geometry = this.geometry;
     }
     const at = this.geometry.attributes;
-    const upload: Array<[string, Float32Array]> = [['position', seg.position], ['s', seg.s], ['edge', seg.edge], ['a', seg.a]];
+    const upload: Array<[string, Float32Array]> = [
+      ['position', seg.position], ['s', seg.s], ['edge', seg.edge], ['a', seg.a], ['hw', seg.hw],
+    ];
     for (const [name, data] of upload) {
       (at[name].data as Float32Array).set(data);
       at[name].needsUpdate = true;

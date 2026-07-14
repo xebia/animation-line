@@ -3,7 +3,7 @@ import type { LineFieldOptions, Polyline, VariantEnv } from '../../src/core/type
 import { VARIANT_NAMES } from '../../src/core/types';
 
 describe('types', () => {
-  it('exposes the 31 variant names', () => {
+  it('exposes the 36 variant names', () => {
     expect(VARIANT_NAMES).toEqual([
       'oscilacion', 'onda', 'interferencia', 'malla', 'rejilla',
       'pliegues', 'cubo', 'flujo', 'entrelazado', 'espiral',
@@ -11,6 +11,7 @@ describe('types', () => {
       'quilla', 'helicoide', 'voluta', 'celosia',
       'aurora', 'moire', 'tunel', 'terreno', 'orbitas', 'pulso',
       'giroscopio', 'toroide', 'cristal', 'frunce', 'dipolo',
+      'cruces', 'tramado', 'mallax', 'panal', 'teselas',
     ]);
   });
 
