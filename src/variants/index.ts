@@ -45,7 +45,6 @@ import { nidos } from './nidos';
 import { prismas } from './prismas';
 import { capas } from './capas';
 import { circuito } from './circuito';
-import { ladrillo } from './ladrillo';
 import { celdilla } from './celdilla';
 import { nodos } from './nodos';
 import { greca } from './greca';
@@ -60,6 +59,6 @@ export const VARIANTS: Record<VariantName, Variant> = {
   tramado, mallax, teselas, extrusion,
   bloques, torres, barras, escaleras, pozos,
   placas, rayado, nidos, prismas, capas, circuito,
-  ladrillo, celdilla, nodos,
+  celdilla, nodos,
   greca, damero, subdivision,
 };

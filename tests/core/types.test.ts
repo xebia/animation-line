@@ -3,7 +3,7 @@ import type { LineFieldOptions, Polyline, VariantEnv } from '../../src/core/type
 import { VARIANT_NAMES } from '../../src/core/types';
 
 describe('types', () => {
-  it('exposes the 52 variant names: 31 de líneas + 21 tramas', () => {
+  it('exposes the 51 variant names: 31 de líneas + 20 tramas', () => {
     expect(VARIANT_NAMES).toEqual([
       'oscilacion', 'onda', 'interferencia', 'malla', 'rejilla',
       'pliegues', 'cubo', 'flujo', 'entrelazado', 'espiral',
@@ -14,7 +14,7 @@ describe('types', () => {
       'tramado', 'mallax', 'teselas', 'extrusion',
       'bloques', 'torres', 'barras', 'escaleras', 'pozos',
       'placas', 'rayado', 'nidos', 'prismas', 'capas', 'circuito',
-      'ladrillo', 'celdilla', 'nodos',
+      'celdilla', 'nodos',
       'greca', 'damero', 'subdivision',
     ]);
   });

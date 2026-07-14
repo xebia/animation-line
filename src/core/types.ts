@@ -15,7 +15,7 @@ export const PATTERN_NAMES = [
   'bloques', 'torres', 'barras', 'escaleras', 'pozos',
   'placas', 'rayado', 'nidos', 'prismas', 'capas', 'circuito',
   // familia de malla: tejido continuo de barras finas con el nudo abierto
-  'ladrillo', 'celdilla', 'nodos',
+  'celdilla', 'nodos',
   // teselados estrictos: ángulos exactos, giros a saltos de 45°/90°
   'greca', 'damero', 'subdivision',
 ] as const;
