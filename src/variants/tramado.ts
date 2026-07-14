@@ -2,8 +2,9 @@ import type { Variant, Polyline, VariantEnv } from '../core/types';
 import { squareTiles, breathe } from '../core/tiling';
 
 /** Tramado: en cada celda, los cuatro lados de un rombo dibujados como trazos sueltos, con
- *  las esquinas abiertas. La onda los alarga, los gira y los acorta: la retícula de rombos
- *  se cierra por zonas y en otras se deshace en trazos diagonales sueltos. */
+ *  las esquinas abiertas. Las diagonales son exactas —nada gira— y lo que hace la onda es
+ *  alargar y acortar el lado: la retícula de rombos se cierra por zonas y en otras se deshace
+ *  en trazos diagonales sueltos. */
 export const tramado: Variant = {
   name: 'tramado',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
@@ -11,7 +12,7 @@ export const tramado: Variant = {
     const out: Polyline[] = [];
 
     for (const { cx, cy } of squareTiles(W, H, cell)) {
-      const b = breathe(cx, cy, t, W, H, { rotAmp: 0.7, scaleAmp: 0.45, freq: 1.1 });
+      const b = breathe(cx, cy, t, W, H, { rotAmp: 0, scaleAmp: 0.45, freq: 1.1 });
       const r = cell * 0.5;                 // media diagonal del rombo
       const len = r * 1.414 * 0.72 * b.scale; // lado del rombo, recortado → esquinas abiertas
 

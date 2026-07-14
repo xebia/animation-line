@@ -22,7 +22,6 @@ export const rayado: Variant = {
       const c = cube(cam, n.x, n.y, s0, h, 4);
       c.top.forEach((e) => out.push({ pts: e, s, w: 1.6 }));
       c.sides.forEach((e) => out.push({ pts: e, s, a: 0.8, w: 1.1 }));
-      c.base.forEach((e) => out.push({ pts: e, s, a: 0.4, w: 0.8 }));
 
       // rayado de la cara superior: líneas paralelas en el plano del mundo, así que siguen
       // la perspectiva del cubo. Cuanto más alta la onda, más marcado el sombreado.

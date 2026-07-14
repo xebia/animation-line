@@ -1,5 +1,5 @@
 import type { Variant, Polyline, VariantEnv } from '../core/types';
-import { squareTiles, breathe, openSides } from '../core/tiling';
+import { squareTiles, breathe, openSides, snap } from '../core/tiling';
 
 /** Nodos: malla fina con el nudo marcado — en cada cruce, un rombo abierto, como la isleta
  *  de soldadura de una placa. Las barras se despegan del nodo con la onda: la red se
@@ -26,8 +26,9 @@ export const nodos: Variant = {
         });
       }
 
-      // la isleta: rombo abierto que gira sobre el nudo
-      const co = Math.cos(b.rot), si = Math.sin(b.rot);
+      // la isleta: rombo abierto que salta entre cuadrante y cuadrante (45°), sin ángulos sueltos
+      const rot = snap(b.rot + t * 0.0004, 8);
+      const co = Math.cos(rot), si = Math.sin(rot);
       const verts: number[] = [];
       for (const [dx, dy] of [[0, -pad], [pad, 0], [0, pad], [-pad, 0]]) {
         verts.push(cx + dx * co - dy * si, cy + dx * si + dy * co);

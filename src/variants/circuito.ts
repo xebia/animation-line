@@ -8,7 +8,7 @@ import type { Cam } from '../core/iso';
 export const circuito: Variant = {
   name: 'circuito',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const S = Math.min(W, H) / (lineCount ?? 5);
+    const S = Math.min(W, H) / (lineCount ?? 4);
     const cam: Cam = { ang: Math.PI / 4, k: 0.48, S, W, H }; // isometría fija: la placa no baila
     const out: Polyline[] = [];
 

@@ -54,6 +54,14 @@ export function openSides(verts: number[], gap: number): number[][] {
   return sides;
 }
 
+/** Cuantiza un ángulo a los `steps` giros exactos de la vuelta (4 → múltiplos de 90°).
+ *  Es lo que mantiene la trama geométrica: la figura salta de una orientación de la rejilla
+ *  a otra, en vez de bailar por ángulos intermedios. */
+export function snap(angle: number, steps: number): number {
+  const q = (Math.PI * 2) / steps;
+  return Math.round(angle / q) * q;
+}
+
 export interface BreatheOpts {
   freq?: number;     // ondas por lienzo
   speed?: number;    // velocidad de avance de la onda

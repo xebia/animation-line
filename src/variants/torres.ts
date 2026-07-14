@@ -7,8 +7,8 @@ import type { Cam } from '../core/iso';
 export const torres: Variant = {
   name: 'torres',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const S = Math.min(W, H) / (lineCount ?? 8);
-    const cam: Cam = { ang: 0.5 + t * 0.00016, k: 0.5, S, W, H };
+    const S = Math.min(W, H) / (lineCount ?? 4.5);
+    const cam: Cam = { ang: Math.PI / 4, k: 0.5, S, W, H }; // isometría fija
     const out: Polyline[] = [];
 
     for (const n of lattice(cam, 1)) {
@@ -18,7 +18,6 @@ export const torres: Variant = {
       const s = grad(w);
       c.top.forEach((e) => out.push({ pts: e, s, w: 1.8 }));
       c.sides.forEach((e) => out.push({ pts: e, s, a: 0.8, w: 1.2 }));
-      c.base.forEach((e) => out.push({ pts: e, s, a: 0.45, w: 0.9 }));
     }
     return out;
   },

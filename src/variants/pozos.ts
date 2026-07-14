@@ -7,8 +7,8 @@ import type { Cam } from '../core/iso';
 export const pozos: Variant = {
   name: 'pozos',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const S = Math.min(W, H) / (lineCount ?? 6);
-    const cam: Cam = { ang: 0.6 + t * 0.00018, k: 0.55, S, W, H };
+    const S = Math.min(W, H) / (lineCount ?? 4);
+    const cam: Cam = { ang: Math.PI / 4, k: 0.52, S, W, H }; // isometría fija
     const out: Polyline[] = [];
 
     for (const n of lattice(cam, 1)) {
@@ -16,10 +16,10 @@ export const pozos: Variant = {
       const depth = -(0.2 + 0.8 * (0.5 + 0.5 * w)); // altura negativa: el cubo cae hacia dentro
       const c = cube(cam, n.x, n.y, 0.4, depth, 4);
       const s = grad(-w);
-      // aquí el "suelo" del cubo es la boca del pozo: es lo que más se ve
+      // aquí el "suelo" del cubo es la boca del pozo: es lo que se ve. El fondo no se dibuja,
+      // así no aparecen líneas cruzándose por detrás de la boca.
       c.base.forEach((e) => out.push({ pts: e, s, w: 1.8 }));
       c.sides.forEach((e) => out.push({ pts: e, s, a: 0.7, w: 1.1 }));
-      c.top.forEach((e) => out.push({ pts: e, s, a: 0.45, w: 0.9 }));
     }
     return out;
   },

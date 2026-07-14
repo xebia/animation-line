@@ -13,7 +13,7 @@ export const ladrillo: Variant = {
     for (const tile of squareTiles(W, H, cell)) {
       const cx = tile.cx + (tile.j & 1 ? cell * 0.5 : 0); // fila desplazada: matajunta
       const cy = tile.cy;
-      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.22, rotAmp: 0.12, freq: 1.0 });
+      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.22, rotAmp: 0, freq: 1.0 });
       const gap = cell * 0.05 * (1 + b.w); // la junta se abre y se cierra
       const half = cell * 0.5 * b.scale;
       const w = 2.0 + 0.8 * b.w;

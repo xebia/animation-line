@@ -48,6 +48,11 @@ import { circuito } from './circuito';
 import { ladrillo } from './ladrillo';
 import { celdilla } from './celdilla';
 import { nodos } from './nodos';
+import { octagonos } from './octagonos';
+import { greca } from './greca';
+import { estrellas } from './estrellas';
+import { damero } from './damero';
+import { subdivision } from './subdivision';
 
 export const VARIANTS: Record<VariantName, Variant> = {
   oscilacion, onda, interferencia, malla, rejilla, pliegues, cubo,
@@ -58,4 +63,5 @@ export const VARIANTS: Record<VariantName, Variant> = {
   bloques, torres, barras, escaleras, pozos,
   placas, rayado, nidos, prismas, capas, circuito,
   ladrillo, celdilla, nodos,
+  octagonos, greca, estrellas, damero, subdivision,
 };

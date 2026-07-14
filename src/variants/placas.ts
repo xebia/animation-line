@@ -8,8 +8,8 @@ import type { Cam } from '../core/iso';
 export const placas: Variant = {
   name: 'placas',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const S = Math.min(W, H) / (lineCount ?? 7);
-    const cam: Cam = { ang: 0.4 + t * 0.0002, k: 0.5, S, W, H };
+    const S = Math.min(W, H) / (lineCount ?? 4.5);
+    const cam: Cam = { ang: Math.PI / 4, k: 0.5, S, W, H }; // isometría fija
     const out: Polyline[] = [];
     const corners: Array<[number, number]> = [[-0.42, -0.42], [0.42, -0.42], [0.42, 0.42], [-0.42, 0.42]];
 

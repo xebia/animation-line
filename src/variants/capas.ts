@@ -2,7 +2,7 @@ import type { Variant, Polyline, VariantEnv } from '../core/types';
 import { project, lattice, grad, openEdge } from '../core/iso';
 import type { Cam } from '../core/iso';
 
-const LAYERS = 3;
+const LAYERS = 2; // dos planos bastan para el paralaje; con tres la trama se ensucia
 
 /** Capas: tres rejillas paralelas a distinta altura que se deslizan a distinta velocidad.
  *  Al cruzarse en pantalla producen moiré, y como cada una está a su cota, el moiré tiene
@@ -10,8 +10,8 @@ const LAYERS = 3;
 export const capas: Variant = {
   name: 'capas',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const S = Math.min(W, H) / (lineCount ?? 5);
-    const cam: Cam = { ang: 0.45 + 0.1 * Math.sin(t * 0.0003), k: 0.5, S, W, H };
+    const S = Math.min(W, H) / (lineCount ?? 3.5);
+    const cam: Cam = { ang: Math.PI / 4, k: 0.5, S, W, H }; // isometría fija
     const out: Polyline[] = [];
 
     for (let L = 0; L < LAYERS; L++) {

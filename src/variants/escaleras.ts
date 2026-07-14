@@ -9,8 +9,8 @@ const STEPS = 5; // peldaños antes de volver a empezar
 export const escaleras: Variant = {
   name: 'escaleras',
   generate({ t, W, H, lineCount }: VariantEnv): Polyline[] {
-    const S = Math.min(W, H) / (lineCount ?? 7);
-    const cam: Cam = { ang: 0.78, k: 0.5, S, W, H };
+    const S = Math.min(W, H) / (lineCount ?? 4.5);
+    const cam: Cam = { ang: Math.PI / 4, k: 0.5, S, W, H }; // isometría fija
     const out: Polyline[] = [];
     const march = Math.floor(t * 0.0022); // el peldaño avanza a saltos: la escalera "corre"
 
@@ -21,7 +21,6 @@ export const escaleras: Variant = {
       const s = grad(step / (STEPS - 1) * 2 - 1);
       c.top.forEach((e) => out.push({ pts: e, s, w: 1.7 }));
       c.sides.forEach((e) => out.push({ pts: e, s, a: 0.8, w: 1.2 }));
-      c.base.forEach((e) => out.push({ pts: e, s, a: 0.4, w: 0.9 }));
     }
     return out;
   },

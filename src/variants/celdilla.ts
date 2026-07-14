@@ -12,7 +12,7 @@ export const celdilla: Variant = {
 
     for (const tile of hexTiles(W, H, cell)) {
       const { cx, cy } = tile;
-      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.26, rotAmp: 0.2, freq: 1.1 });
+      const b = breathe(cx, cy, t, W, H, { scaleAmp: 0.26, rotAmp: 0, freq: 1.1 });
       const flip = (tile.i + tile.j) & 1 ? Math.PI / 3 : 0; // nudos alternos: el panal cierra
       const reach = cell * 0.5 * b.scale;   // media distancia al vecino: las barras se tocan
       const gap = cell * 0.05 * (1 + 0.8 * b.w);
